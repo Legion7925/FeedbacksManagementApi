@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FeedbacksManagementApi.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedbacksManagementApi.Controllers
 {
@@ -7,5 +9,15 @@ namespace FeedbacksManagementApi.Controllers
     [ApiController]
     public class CasesController : ControllerBase
     {
+        public CasesController()
+        {
+            
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetCases()
+        //{
+        //    return Ok();  
+        //}
     }
 }

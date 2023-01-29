@@ -16,18 +16,18 @@ namespace FeedbacksManagementApi.Entities
         /// <summary>
         /// عنوان
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "عنوان مشکل نمیتواند خالی باشد")]
         public string? Title { get; set; }
         /// <summary>
         /// شرح مشکل
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "شرح مشکل نمیتواند خالی باشد")]
         public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// آدرس منبع
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "آدرس منبع نمیتواند خالی باشد")]
         public string SourceAddress { get; set; } = string.Empty;
 
         /// <summary>
