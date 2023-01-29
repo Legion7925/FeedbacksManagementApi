@@ -11,5 +11,7 @@
         /// نام صفحه
         /// </summary>
         public string? PageName { get; set; }
+
+        public ICollection<User>? Users { get; set; }
     }
 }

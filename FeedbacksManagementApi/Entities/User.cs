@@ -45,5 +45,5 @@ public class User
     /// <summary>
     /// لیست صفحاتی که کاربر به آنها دسترسی دارد
     /// </summary>
-    public ICollection<UserPages>? UserPages { get; set; }
+    public ICollection<Page>? Pages { get; set; }
 }

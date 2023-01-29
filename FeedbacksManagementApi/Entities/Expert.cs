@@ -1,4 +1,5 @@
 ﻿using FeedbacksManagementApi.Helper.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FeedbacksManagementApi.Entities
 {
@@ -69,7 +70,18 @@ namespace FeedbacksManagementApi.Entities
         /// تعداد مورد های پاسخ داده شده
         /// </summary>
         public int AnsweredCount => Feedbacks?.Count ?? 0;
+        /// <summary>
+        /// کلید خارجی از جدول تخصص 
+        /// </summary>
+        public int FkIdExpertise { get; set; }
+        /// <summary>
+        /// تخصص 
+        /// </summary>
+        [ForeignKey(nameof(FkIdExpertise))]
+        public Specialty? Expertise { get; set; }
 
         public ICollection<Feedback>? Feedbacks { get; set; }
+
+
     }
 }
