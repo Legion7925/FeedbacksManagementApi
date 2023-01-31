@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FeedbacksManagementApi.Entities
 {
-    public class Case
+    public class CaseBase
     {
-        public int Id { get; set; }
-
         /// <summary>
         /// منبع
         /// </summary>
@@ -34,6 +32,12 @@ namespace FeedbacksManagementApi.Entities
         /// الحاقیات
         /// </summary>
         public string? Resources { get; set; }
+
+    }
+    public class Case : CaseBase
+    {
+        [Key]
+        public int Id { get; set; }
 
     }
 }

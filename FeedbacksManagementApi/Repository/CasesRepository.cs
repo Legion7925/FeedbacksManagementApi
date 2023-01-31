@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
 using FeedbacksManagementApi.Entities;
 using FeedbacksManagementApi.Helper;
+using FeedbacksManagementApi.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeedbacksManagementApi.Repository
 {
-    public class CasesRepository
+    public class CasesRepository : ICasesRepository
     {
         private readonly FeedbacksDbContext context;
+        private readonly IMapper mapper;
 
-        public CasesRepository(FeedbacksDbContext context)
+        public CasesRepository(FeedbacksDbContext context , IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -22,17 +25,27 @@ namespace FeedbacksManagementApi.Repository
         {
             return context.Cases.AsNoTracking().AsEnumerable();
         }
-
+        /// <summary>
+        /// دریافت یک مورد بر اساس آیدی
+        /// </summary>
+        /// <param name="caseId">آیدی مورد</param>
+        /// <returns></returns>
         public async Task<Case?> GetCaseById(int caseId)
         {
-           return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
+            return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
         }
-
-        public async Task AddCase(Case feedbackCase)
+        /// <summary>
+        /// اضافه کردن مورد جدید
+        /// </summary>
+        /// <param name="feedbackCase"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task AddCase(CaseBase feedbackCase)
         {
             try
             {
-                context.Cases.Add(feedbackCase);
+                var @case = mapper.Map<Case>(feedbackCase);
+                context.Cases.Add(@case);
                 await context.SaveChangesAsync();
             }
             catch (Exception)
@@ -40,15 +53,21 @@ namespace FeedbacksManagementApi.Repository
                 throw new AppException("در ثبت مورد جدید مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
             }
         }
-
-        public async Task UpdateCase(Case feedbackCase , int caseId)
+        /// <summary>
+        /// ویرایش مورد
+        /// </summary>
+        /// <param name="feedbackCase"></param>
+        /// <param name="caseId"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task UpdateCase(CaseBase feedbackCase, int caseId)
         {
             try
             {
                 var feedback = await GetCaseById(caseId);
-                if(feedback == null)
+                if (feedback == null)
                 {
-                    throw new AppException("مورد نظر یافت نشد");
+                    throw new AppException("مورد یافت نشد");
                 }
 
                 feedback.Title = feedbackCase.Title;
@@ -61,7 +80,48 @@ namespace FeedbacksManagementApi.Repository
             }
             catch (Exception)
             {
-                throw new AppException("در ویرایش مورد جدید مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
+                throw new AppException("در ویرایش مورد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
+            }
+        }
+        /// <summary>
+        /// حذف یک مورد
+        /// </summary>
+        /// <param name="caseId"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task DeleteCase(int caseId)
+        {
+            try
+            {
+                var feedbackCase = await GetCaseById(caseId);
+                if (feedbackCase == null)
+                {
+                    throw new AppException("مورد یافت نشد");
+                }
+                context.Cases.Remove(feedbackCase);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new AppException("در حذق مورد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
+            }
+        }
+        /// <summary>
+        /// حذف چندین مورد
+        /// </summary>
+        /// <param name="caseIds"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task DeleteMultipleCases(int[] caseIds)
+        {
+            try
+            {
+                await context.Cases.Where(i => caseIds.Contains(i.Id)).ExecuteDeleteAsync();
+            }
+            catch (Exception)
+            {
+
+                throw new AppException("در حذف موارد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
             }
         }
     }
