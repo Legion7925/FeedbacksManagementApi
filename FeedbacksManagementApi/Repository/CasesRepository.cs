@@ -138,7 +138,7 @@ namespace FeedbacksManagementApi.Repository
             }
         }
         /// <summary>
-        /// ارسال مورد برای پاسخ دهی
+        /// ارسال مورد به جدول فیدبک
         /// </summary>
         /// <param name="feedbackCase"></param>
         /// <returns></returns>
