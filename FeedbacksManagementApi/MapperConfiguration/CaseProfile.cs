@@ -8,6 +8,8 @@ namespace FeedbacksManagementApi.MapperConfiguration
         public CaseProfile()
         {
             CreateMap<CaseBase, Case>();
+
+            CreateMap<CaseBase , Feedback>();
         }
     }
 }

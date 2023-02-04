@@ -1,5 +1,7 @@
 ﻿using FeedbacksManagementApi.Helper.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FeedbacksManagementApi.Entities
 {
@@ -33,11 +35,20 @@ namespace FeedbacksManagementApi.Entities
         /// </summary>
         public string? Resources { get; set; }
 
+        /// <summary>
+        /// کلید خارجی کاربر
+        /// </summary>
+        [ForeignKey(nameof(Customer))]
+        [Required]
+        public int FkIdCustomer { get; set; }
+
     }
     public class Case : CaseBase
     {
         [Key]
         public int Id { get; set; }
 
+        [JsonIgnore]
+        public Customer? Customer { get; set; }
     }
 }

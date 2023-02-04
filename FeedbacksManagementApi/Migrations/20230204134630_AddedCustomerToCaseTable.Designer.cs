@@ -4,6 +4,7 @@ using FeedbacksManagementApi.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FeedbacksManagementApi.Migrations
 {
     [DbContext(typeof(FeedbacksDbContext))]
-    partial class FeedbacksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230204134630_AddedCustomerToCaseTable")]
+    partial class AddedCustomerToCaseTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,6 +191,9 @@ namespace FeedbacksManagementApi.Migrations
                     b.Property<int>("FkIdCustomer")
                         .HasColumnType("int");
 
+                    b.Property<byte?>("Porbablity")
+                        .HasColumnType("tinyint");
+
                     b.Property<byte>("Priorty")
                         .HasColumnType("tinyint");
 
@@ -206,9 +212,6 @@ namespace FeedbacksManagementApi.Migrations
                     b.Property<string>("SerialNumber")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<byte?>("Similarity")
-                        .HasColumnType("tinyint");
 
                     b.Property<byte>("Source")
                         .HasColumnType("tinyint");

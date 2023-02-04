@@ -45,6 +45,20 @@ namespace FeedbacksManagementApi.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SubmitForAnswer([FromBody] CaseBase @case)
+        {
+            try
+            {
+                await caseRepository.SubmitForRespond(@case);
+                return Ok("ارسال مورد برای پاسخ دهی با موفقیت انجام شد");
+            }
+            catch (AppException ax)
+            {
+                return BadRequest(ax.Message);
+            }
+        }
+
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetCaseById(int id)

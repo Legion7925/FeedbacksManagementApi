@@ -23,7 +23,14 @@ namespace FeedbacksManagementApi.Repository
         /// <returns></returns>
         public IEnumerable<Case> GetCases()
         {
-            return context.Cases.AsNoTracking().AsEnumerable();
+            try
+            {
+                return context.Cases.AsNoTracking().AsEnumerable();
+            }
+            catch (Exception)
+            {
+                throw new AppException("خطا در دریافت لیست مورد ها");
+            }
         }
         /// <summary>
         /// دریافت یک مورد بر اساس آیدی
@@ -32,7 +39,14 @@ namespace FeedbacksManagementApi.Repository
         /// <returns></returns>
         public async Task<Case?> GetCaseById(int caseId)
         {
-            return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
+            try
+            {
+                return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
+            }
+            catch (Exception)
+            {
+                throw new AppException("خطا در دریافت مورد");
+            }
         }
         /// <summary>
         /// اضافه کردن مورد جدید
@@ -45,7 +59,7 @@ namespace FeedbacksManagementApi.Repository
             try
             {
                 var @case = mapper.Map<Case>(feedbackCase);
-                context.Cases.Add(@case);
+                await context.Cases.AddAsync(@case);
                 await context.SaveChangesAsync();
             }
             catch (Exception)
@@ -120,8 +134,28 @@ namespace FeedbacksManagementApi.Repository
             }
             catch (Exception)
             {
-
                 throw new AppException("در حذف موارد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
+            }
+        }
+        /// <summary>
+        /// ارسال مورد برای پاسخ دهی
+        /// </summary>
+        /// <param name="feedbackCase"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task SubmitForRespond(CaseBase feedbackCase)
+        {
+            try
+            {
+                var feedback = mapper.Map<Feedback>(feedbackCase);
+                feedback.State = Helper.Enums.FeedbackState.ReadyToSend;
+                feedback.SerialNumber = $"{DateTime.Now.Ticks}";
+                await context.Feedbacks.AddAsync(feedback);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new AppException("خطا در ارسال برای پاسخ دهی");
             }
         }
     }

@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using FeedbacksManagementApi.Helper.Enums;
 
 namespace FeedbacksManagementApi.Entities
 {
-    public class Feedback
+    public class FeedbackBase
     {
-        public int Id { get; set; }
         /// <summary>
         /// عنوان
         /// </summary>
@@ -35,28 +35,26 @@ namespace FeedbacksManagementApi.Entities
         /// کلید خارجی کاربر
         /// </summary>
         [ForeignKey(nameof(Customer))]
+        [Required]
         public int FkIdCustomer { get; set; }
         /// <summary>
         /// الحاقیات
         /// </summary>
         public string? Resources { get; set; }
         /// <summary>
-        /// شماره سریال
-        /// </summary>
-        [MaxLength(250)]
-        public string? SerialNumber { get; set; }
-        /// <summary>
         /// میزان شباهت
         /// </summary>
-        public byte? Porbablity { get; set; }
-        /// <summary>
-        /// وضعیت فیدبک
-        /// </summary>
-        public FeedbackState State { get; set; }
+        public byte? Similarity { get; set; }
         /// <summary>
         /// اولویت
         /// </summary>
         public Priority Priorty { get; set; }
+    }
+
+    public class Feedback : FeedbackBase
+    {
+        public int Id { get; set; }
+
         /// <summary>
         /// تاریخ ارجاع
         /// </summary>
@@ -66,6 +64,18 @@ namespace FeedbacksManagementApi.Entities
         /// </summary>
         public DateTime RespondDate { get; set; }
 
+        /// <summary>
+        /// وضعیت فیدبک
+        /// </summary>
+        public FeedbackState State { get; set; }
+
+        /// <summary>
+        /// شماره سریال
+        /// </summary>
+        [MaxLength(250)]
+        public string? SerialNumber { get; set; }
+
+        [JsonIgnore]
         public Customer? Customer { get; set; }
 
         /// <summary>
@@ -74,5 +84,6 @@ namespace FeedbacksManagementApi.Entities
         public ICollection<Tag>? Tags { get; set; }
 
         public ICollection<Expert>? Experts { get; set; }
+
     }
 }

@@ -29,5 +29,7 @@ namespace FeedbacksManagementApi.Entities
         public DbSet<UserPages> UserPages { get; set; }
 
         public DbSet<Case> Cases { get; set; }
+
+        public DbSet<ExpertFeedback> ExpertFeedbacks { get; set; }
     }
 }

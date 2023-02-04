@@ -10,6 +10,7 @@ namespace FeedbacksManagementApi.Interface
         Task<Case?> GetCaseById(int caseId);
         IEnumerable<Case> GetCases();
         Task UpdateCase(CaseBase feedbackCase, int caseId);
+        Task SubmitForRespond(CaseBase feedbackCase);
     }
 
 }

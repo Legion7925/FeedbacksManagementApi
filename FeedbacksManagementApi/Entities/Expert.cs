@@ -81,7 +81,5 @@ namespace FeedbacksManagementApi.Entities
         public Specialty? Expertise { get; set; }
 
         public ICollection<Feedback>? Feedbacks { get; set; }
-
-
     }
 }
