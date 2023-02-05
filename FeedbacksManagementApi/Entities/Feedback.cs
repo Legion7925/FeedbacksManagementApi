@@ -38,6 +38,12 @@ namespace FeedbacksManagementApi.Entities
         [Required]
         public int FkIdCustomer { get; set; }
         /// <summary>
+        /// کلید خارجی محصول
+        /// </summary>
+        [ForeignKey(nameof(Product))]
+        [Required]
+        public int FkIdProduct { get; set; }
+        /// <summary>
         /// الحاقیات
         /// </summary>
         public string? Resources { get; set; }
@@ -65,6 +71,11 @@ namespace FeedbacksManagementApi.Entities
         public DateTime RespondDate { get; set; }
 
         /// <summary>
+        /// تاریخ ایجاد
+        /// </summary>
+        public DateTime? Created { get; set; }
+
+        /// <summary>
         /// وضعیت فیدبک
         /// </summary>
         public FeedbackState State { get; set; }
@@ -77,6 +88,9 @@ namespace FeedbacksManagementApi.Entities
 
         [JsonIgnore]
         public Customer? Customer { get; set; }
+
+        [JsonIgnore]
+        public Product? Product { get; set; }
 
         /// <summary>
         /// لیست تگ های اتوماتیک

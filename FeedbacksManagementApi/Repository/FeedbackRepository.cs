@@ -62,8 +62,9 @@ namespace FeedbacksManagementApi.Repository
             try
             {
                 var feedback = mapper.Map<Feedback>(feedbackbase);
-                feedback.State = Helper.Enums.FeedbackState.ReadyToSend;
+                feedback.State = FeedbackState.ReadyToSend;
                 feedback.SerialNumber = $"{DateTime.Now.Ticks}";
+                feedback.Created = DateTime.Now;
                 await context.Feedbacks.AddAsync(feedback);
                 await context.SaveChangesAsync();
             }
@@ -101,19 +102,20 @@ namespace FeedbacksManagementApi.Repository
             }
         }
         /// <summary>
-        /// حذف مورد
+        /// تغییر وضعیت موارد ارسالی به وضعیت حذف شده
         /// </summary>
         /// <param name="feedbackId"></param>
         /// <returns></returns>
         /// <exception cref="AppException"></exception>
-        public async Task DeleteFeedback([FromRoute] int feedbackId)
+        public async Task DeleteFeedbacks([FromRoute] int[] feedbackIds)
         {
             try
             {
-                var feedback = await GetFeedbackById(feedbackId);
-                if (feedback == null) throw new AppException("مورد مورد نظر یافت نشد");
-                context.Feedbacks.Remove(feedback);
-                await context.SaveChangesAsync();
+                if (feedbackIds.Any())
+                    throw new AppException("لیست موارد ارسالی نمیتواند خالی باشد");
+
+                await context.Feedbacks.Where(i => feedbackIds.Contains(i.Id))
+                    .ExecuteUpdateAsync(f => f.SetProperty(p => p.State, p => FeedbackState.Deleted));
             }
             catch (Exception)
             {
@@ -159,6 +161,52 @@ namespace FeedbacksManagementApi.Repository
             {
                 throw new AppException("خطا در ارسال موارد به متخصص");
             }
+        }
+        /// <summary>
+        /// تغییر وضعیت موارد ارسالی به موارد بایگانی
+        /// </summary>
+        /// <param name="feedbackIds"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        public async Task ArchiveFeedbacks([FromRoute] int[] feedbackIds)
+        {
+            try
+            {
+                if (feedbackIds.Any())
+                    throw new AppException("لیست موارد ارسالی نمیتواند خالی باشد");
+
+                await context.Feedbacks.Where(i => feedbackIds.Contains(i.Id))
+                    .ExecuteUpdateAsync(f => f.SetProperty(p => p.State, p => FeedbackState.Archived));
+            }
+            catch (Exception)
+            {
+                throw new AppException("خطا در حذف مورد");
+            }
+        }
+        /// <summary>
+        /// گزارش از موارد با فیلتر
+        /// </summary>
+        /// <param name="filterModel"></param>
+        /// <returns></returns>
+        public IEnumerable<Feedback> GetFeedbackReport([FromBody] FeedbackReportFilterModel filterModel)
+        {
+            var feedbacks = context.Feedbacks.AsNoTracking();
+            if (filterModel.ProductId is not 0) feedbacks =  feedbacks.Where(i => i.FkIdProduct == filterModel.ProductId);
+            if (filterModel.CustomerId is not 0) feedbacks = feedbacks.Where(i => i.FkIdCustomer == filterModel.CustomerId);
+            //if (filterModel.ExpertId is not 0) feedbacks = feedbacks.Include(e => e.Experts).Where(i => );
+            if (filterModel.Tags is not null && filterModel.Tags.Count is not 0) 
+                feedbacks =  feedbacks.Where(i => i.Tags == filterModel.Tags);
+            if (filterModel.Source is not null) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
+            if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created == filterModel.Created);
+            if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate == filterModel.ReferralDate);
+            if (filterModel.RespondDate is not null) feedbacks = feedbacks.Where(i => i.RespondDate == filterModel.RespondDate);
+            if (filterModel.Priorty is not null) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
+            if (filterModel.State is not null) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
+            if (!string.IsNullOrEmpty(filterModel.Description)) feedbacks = feedbacks.Where(i => i.Description == filterModel.Description);
+            if (!string.IsNullOrEmpty(filterModel.Respond)) feedbacks = feedbacks.Where(i => i.Respond == filterModel.Respond);
+            if (!string.IsNullOrEmpty(filterModel.Title)) feedbacks = feedbacks.Where(i => i.Title == filterModel.Title);
+            if (!string.IsNullOrEmpty(filterModel.SerialNumber)) feedbacks = feedbacks.Where(i => i.SerialNumber == filterModel.SerialNumber);
+            return feedbacks.AsEnumerable();
         }
     }
 }

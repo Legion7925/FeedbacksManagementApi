@@ -150,6 +150,7 @@ namespace FeedbacksManagementApi.Repository
                 var feedback = mapper.Map<Feedback>(feedbackCase);
                 feedback.State = Helper.Enums.FeedbackState.ReadyToSend;
                 feedback.SerialNumber = $"{DateTime.Now.Ticks}";
+                feedback.Created = DateTime.Now;
                 await context.Feedbacks.AddAsync(feedback);
                 await context.SaveChangesAsync();
             }
