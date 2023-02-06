@@ -1,120 +1,117 @@
-﻿using FeedbacksManagementApi.Entities;
-using FeedbacksManagementApi.Helper;
-using FeedbacksManagementApi.Interface;
-using Microsoft.AspNetCore.Http;
+﻿using Domain.Entities;
+using Domain.Interfaces;
+using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace FeedbacksManagementApi.Controllers
+namespace FeedbacksManagementApi.Controllers;
+
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class CasesController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class CasesController : ControllerBase
+    private readonly ICasesRepository caseRepository;
+
+    public CasesController(ICasesRepository caseRepository)
     {
-        private readonly ICasesRepository caseRepository;
+        this.caseRepository = caseRepository;
+    }
 
-        public CasesController(ICasesRepository caseRepository)
+    [HttpGet]
+    public IActionResult GetCases()
+    {
+        try
         {
-            this.caseRepository = caseRepository;
+            return Ok(caseRepository.GetCases());
         }
-
-        [HttpGet]
-        public IActionResult GetCases()
+        catch(AppException ax)
         {
-            try
-            {
-                return Ok(caseRepository.GetCases());
-            }
-            catch(AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            return BadRequest(ax.Message);
         }
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCase([FromBody]CaseBase @case)
+    [HttpPost]
+    public async Task<IActionResult> AddCase([FromBody]CaseBase @case)
+    {
+        try
         {
-            try
-            {
-                await caseRepository.AddCase(@case);
-                return Ok("مورد جدید با موفقیت اضافه شد");
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            await caseRepository.AddCase(@case);
+            return Ok("مورد جدید با موفقیت اضافه شد");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> SubmitForAnswer([FromBody] CaseBase @case)
+        catch (AppException ax)
         {
-            try
-            {
-                await caseRepository.SubmitForRespond(@case);
-                return Ok("ارسال مورد برای پاسخ دهی با موفقیت انجام شد");
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            return BadRequest(ax.Message);
         }
+    }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetCaseById(int id)
+    [HttpPost]
+    public async Task<IActionResult> SubmitForAnswer([FromBody] CaseBase @case)
+    {
+        try
         {
-            try
-            {
-                return Ok(await caseRepository.GetCaseById(id));
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            await caseRepository.SubmitForRespond(@case);
+            return Ok("ارسال مورد برای پاسخ دهی با موفقیت انجام شد");
         }
-
-        [HttpPut]
-        [Route("{caseId}")]
-        public async Task<IActionResult> UpdateCase([FromBody]CaseBase @case , [FromRoute] int caseId)
+        catch (AppException ax)
         {
-            try
-            {
-                await caseRepository.UpdateCase(@case, caseId);
-                return Ok("ویرایش مورد با موفقیت انجام شد");
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            return BadRequest(ax.Message);
         }
+    }
 
-        [HttpDelete]
-        [Route("{caseId}")]
-        public async Task<IActionResult> DeleteCase([FromRoute] int caseId)
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> GetCaseById(int id)
+    {
+        try
         {
-            try
-            {
-                await caseRepository.DeleteCase(caseId);
-                return Ok("حذف مورد با موفقیت انجام شد");
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            return Ok(await caseRepository.GetCaseById(id));
         }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteMultipleCases([FromBody] int[] caseIds)
+        catch (AppException ax)
         {
-            try
-            {
-                await caseRepository.DeleteMultipleCases(caseIds);
-                return Ok("حذف موارد ارسالی با موفقیت انجام شد");
-            }
-            catch (AppException ax)
-            {
-                return BadRequest(ax.Message);
-            }
+            return BadRequest(ax.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("{caseId}")]
+    public async Task<IActionResult> UpdateCase([FromBody]CaseBase @case , [FromRoute] int caseId)
+    {
+        try
+        {
+            await caseRepository.UpdateCase(@case, caseId);
+            return Ok("ویرایش مورد با موفقیت انجام شد");
+        }
+        catch (AppException ax)
+        {
+            return BadRequest(ax.Message);
+        }
+    }
+
+    [HttpDelete]
+    [Route("{caseId}")]
+    public async Task<IActionResult> DeleteCase([FromRoute] int caseId)
+    {
+        try
+        {
+            await caseRepository.DeleteCase(caseId);
+            return Ok("حذف مورد با موفقیت انجام شد");
+        }
+        catch (AppException ax)
+        {
+            return BadRequest(ax.Message);
+        }
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteMultipleCases([FromBody] int[] caseIds)
+    {
+        try
+        {
+            await caseRepository.DeleteMultipleCases(caseIds);
+            return Ok("حذف موارد ارسالی با موفقیت انجام شد");
+        }
+        catch (AppException ax)
+        {
+            return BadRequest(ax.Message);
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using FeedbacksManagementApi.Entities;
-using FeedbacksManagementApi.Helper.Enums;
+﻿using Domain.Entities;
+using Domain.Shared.Enums;
 
 namespace FeedbacksManagementApi.Model
 {

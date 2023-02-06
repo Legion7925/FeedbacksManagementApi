@@ -1,6 +1,6 @@
-using FeedbacksManagementApi.Entities;
-using FeedbacksManagementApi.Interface;
+using Domain.Interfaces;
 using FeedbacksManagementApi.Repository;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

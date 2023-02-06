@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
-using FeedbacksManagementApi.Entities;
-using FeedbacksManagementApi.Helper;
-using FeedbacksManagementApi.Interface;
+using Domain.Entities;
+using Domain.Interfaces;
+using Domain.Shared.Enums;
+using Infrastructure.Data;
+using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeedbacksManagementApi.Repository
@@ -148,7 +150,7 @@ namespace FeedbacksManagementApi.Repository
             try
             {
                 var feedback = mapper.Map<Feedback>(feedbackCase);
-                feedback.State = Helper.Enums.FeedbackState.ReadyToSend;
+                feedback.State = FeedbackState.ReadyToSend;
                 feedback.SerialNumber = $"{DateTime.Now.Ticks}";
                 feedback.Created = DateTime.Now;
                 await context.Feedbacks.AddAsync(feedback);
