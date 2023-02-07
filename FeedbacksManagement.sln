@@ -5,9 +5,11 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedbacksManagementApi", "FeedbacksManagementApi\FeedbacksManagementApi.csproj", "{74DD0490-76AC-43C3-B840-A129376CBEC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{55B1B4EE-B412-42F8-B8B4-29735FE04109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{55B1B4EE-B412-42F8-B8B4-29735FE04109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{72F31BA5-C08D-48BE-9FAE-DCBAF074414F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{72F31BA5-C08D-48BE-9FAE-DCBAF074414F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedbackManagementWeb", "FeedbackManagementWeb\FeedbackManagementWeb.csproj", "{7ACC9AF2-5000-4F86-A3AC-850F928BEE98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{72F31BA5-C08D-48BE-9FAE-DCBAF074414F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72F31BA5-C08D-48BE-9FAE-DCBAF074414F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72F31BA5-C08D-48BE-9FAE-DCBAF074414F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ACC9AF2-5000-4F86-A3AC-850F928BEE98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ACC9AF2-5000-4F86-A3AC-850F928BEE98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ACC9AF2-5000-4F86-A3AC-850F928BEE98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ACC9AF2-5000-4F86-A3AC-850F928BEE98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
