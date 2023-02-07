@@ -27,6 +27,10 @@ public class CasesController : ControllerBase
         {
             return BadRequest(ax.Message);
         }
+        catch(Exception)
+        {
+            return BadRequest("خطا در دریافت موارد");
+        }
     }
 
     [HttpPost]
@@ -40,6 +44,10 @@ public class CasesController : ControllerBase
         catch (AppException ax)
         {
             return BadRequest(ax.Message);
+        }
+        catch (Exception)
+        {
+            return BadRequest("خطا در اضافه کردن مورد");
         }
     }
 
@@ -55,6 +63,10 @@ public class CasesController : ControllerBase
         {
             return BadRequest(ax.Message);
         }
+        catch (Exception)
+        {
+            return BadRequest("خطا در ارسال برای پاسخ دهی");
+        }
     }
 
     [HttpGet]
@@ -68,6 +80,10 @@ public class CasesController : ControllerBase
         catch (AppException ax)
         {
             return BadRequest(ax.Message);
+        }
+        catch (Exception)
+        {
+            return BadRequest("خطا در دریافت مورد");
         }
     }
 
@@ -84,6 +100,10 @@ public class CasesController : ControllerBase
         {
             return BadRequest(ax.Message);
         }
+        catch (Exception)
+        {
+            return BadRequest("خطا در ویرایش مورد");
+        }
     }
 
     [HttpDelete]
@@ -99,6 +119,10 @@ public class CasesController : ControllerBase
         {
             return BadRequest(ax.Message);
         }
+        catch (Exception)
+        {
+            return BadRequest("خطا در حذف مورد");
+        }
     }
 
     [HttpDelete]
@@ -112,6 +136,10 @@ public class CasesController : ControllerBase
         catch (AppException ax)
         {
             return BadRequest(ax.Message);
+        }
+        catch (Exception)
+        {
+            return BadRequest("خطا در حذف موارد");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FeedbacksManagementApi.Repository
         private readonly FeedbacksDbContext context;
         private readonly IMapper mapper;
 
-        public CasesRepository(FeedbacksDbContext context , IMapper mapper)
+        public CasesRepository(FeedbacksDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -25,14 +25,7 @@ namespace FeedbacksManagementApi.Repository
         /// <returns></returns>
         public IEnumerable<Case> GetCases()
         {
-            try
-            {
-                return context.Cases.AsNoTracking().AsEnumerable();
-            }
-            catch (Exception)
-            {
-                throw new AppException("خطا در دریافت لیست مورد ها");
-            }
+            return context.Cases.AsNoTracking().AsEnumerable();
         }
         /// <summary>
         /// دریافت یک مورد بر اساس آیدی
@@ -41,14 +34,8 @@ namespace FeedbacksManagementApi.Repository
         /// <returns></returns>
         public async Task<Case?> GetCaseById(int caseId)
         {
-            try
-            {
-                return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
-            }
-            catch (Exception)
-            {
-                throw new AppException("خطا در دریافت مورد");
-            }
+
+            return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
         }
         /// <summary>
         /// اضافه کردن مورد جدید
@@ -58,16 +45,10 @@ namespace FeedbacksManagementApi.Repository
         /// <exception cref="AppException"></exception>
         public async Task AddCase(CaseBase feedbackCase)
         {
-            try
-            {
-                var @case = mapper.Map<Case>(feedbackCase);
-                await context.Cases.AddAsync(@case);
-                await context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw new AppException("در ثبت مورد جدید مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
-            }
+            await ValidateForeignKeys(feedbackCase.FkIdCustomer, feedbackCase.FkIdProduct);
+            var @case = mapper.Map<Case>(feedbackCase);
+            await context.Cases.AddAsync(@case);
+            await context.SaveChangesAsync();
         }
         /// <summary>
         /// ویرایش مورد
@@ -78,26 +59,20 @@ namespace FeedbacksManagementApi.Repository
         /// <exception cref="AppException"></exception>
         public async Task UpdateCase(CaseBase feedbackCase, int caseId)
         {
-            try
+            await ValidateForeignKeys(feedbackCase.FkIdCustomer, feedbackCase.FkIdProduct);
+            var feedback = await GetCaseById(caseId);
+            if (feedback == null)
             {
-                var feedback = await GetCaseById(caseId);
-                if (feedback == null)
-                {
-                    throw new AppException("مورد یافت نشد");
-                }
-
-                feedback.Title = feedbackCase.Title;
-                feedback.Description = feedbackCase.Description;
-                feedback.Resources = feedbackCase.Resources;
-                feedback.Source = feedbackCase.Source;
-                feedback.SourceAddress = feedbackCase.SourceAddress;
-
-                await context.SaveChangesAsync();
+                throw new AppException("مورد یافت نشد");
             }
-            catch (Exception)
-            {
-                throw new AppException("در ویرایش مورد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
-            }
+
+            feedback.Title = feedbackCase.Title;
+            feedback.Description = feedbackCase.Description;
+            feedback.Resources = feedbackCase.Resources;
+            feedback.Source = feedbackCase.Source;
+            feedback.SourceAddress = feedbackCase.SourceAddress;
+
+            await context.SaveChangesAsync();
         }
         /// <summary>
         /// حذف یک مورد
@@ -107,20 +82,13 @@ namespace FeedbacksManagementApi.Repository
         /// <exception cref="AppException"></exception>
         public async Task DeleteCase(int caseId)
         {
-            try
+            var feedbackCase = await GetCaseById(caseId);
+            if (feedbackCase == null)
             {
-                var feedbackCase = await GetCaseById(caseId);
-                if (feedbackCase == null)
-                {
-                    throw new AppException("مورد یافت نشد");
-                }
-                context.Cases.Remove(feedbackCase);
-                await context.SaveChangesAsync();
+                throw new AppException("مورد یافت نشد");
             }
-            catch (Exception)
-            {
-                throw new AppException("در حذق مورد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
-            }
+            context.Cases.Remove(feedbackCase);
+            await context.SaveChangesAsync();
         }
         /// <summary>
         /// حذف چندین مورد
@@ -130,14 +98,7 @@ namespace FeedbacksManagementApi.Repository
         /// <exception cref="AppException"></exception>
         public async Task DeleteMultipleCases(int[] caseIds)
         {
-            try
-            {
-                await context.Cases.Where(i => caseIds.Contains(i.Id)).ExecuteDeleteAsync();
-            }
-            catch (Exception)
-            {
-                throw new AppException("در حذف موارد مشکلی پیش آمده در صورت تکرار با پشتیبانی تماس بگیرید");
-            }
+            await context.Cases.Where(i => caseIds.Contains(i.Id)).ExecuteDeleteAsync();
         }
         /// <summary>
         /// ارسال مورد به جدول فیدبک
@@ -147,19 +108,27 @@ namespace FeedbacksManagementApi.Repository
         /// <exception cref="AppException"></exception>
         public async Task SubmitForRespond(CaseBase feedbackCase)
         {
-            try
-            {
-                var feedback = mapper.Map<Feedback>(feedbackCase);
-                feedback.State = FeedbackState.ReadyToSend;
-                feedback.SerialNumber = $"{DateTime.Now.Ticks}";
-                feedback.Created = DateTime.Now;
-                await context.Feedbacks.AddAsync(feedback);
-                await context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw new AppException("خطا در ارسال برای پاسخ دهی");
-            }
+            await ValidateForeignKeys(feedbackCase.FkIdCustomer, feedbackCase.FkIdProduct);
+            var feedback = mapper.Map<Feedback>(feedbackCase);
+            feedback.State = FeedbackState.ReadyToSend;
+            feedback.SerialNumber = $"{DateTime.Now.Ticks}";
+            feedback.Created = DateTime.Now;
+            await context.Feedbacks.AddAsync(feedback);
+            await context.SaveChangesAsync();
+        }
+        /// <summary>
+        /// اعتبارسنجی وجود آیدی مشتری و محصول
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        private async Task ValidateForeignKeys(int customerId, int productId)
+        {
+            var customerExist = await context.Customers.AnyAsync(i => i.Id == customerId);
+            if (customerExist is not true) throw new AppException("کد مشتری یافت نشد");
+            var productExist = await context.Products.AnyAsync(i => i.Id == productId);
+            if (productExist is not true) throw new AppException("کد محصول یافت نشد");
         }
     }
 }

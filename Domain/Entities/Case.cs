@@ -42,6 +42,13 @@ namespace Domain.Entities
         [Required]
         public int FkIdCustomer { get; set; }
 
+        /// <summary>
+        /// کلید خارجی محصول
+        /// </summary>
+        [ForeignKey(nameof(Product))]
+        [Required]
+        public int FkIdProduct { get; set; }
+
     }
     public class Case : CaseBase
     {
@@ -50,5 +57,8 @@ namespace Domain.Entities
 
         [JsonIgnore]
         public Customer? Customer { get; set; }
+
+        [JsonIgnore]
+        public Product? Product { get; set; }
     }
 }

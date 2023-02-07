@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 
-namespace Infrastructure.MapperConfiguration
+namespace FeedbacksManagementApi.MapperConfiguration
 {
     public class CaseProfile : Profile
     {

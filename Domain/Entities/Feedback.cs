@@ -18,10 +18,6 @@ namespace Domain.Entities
         [Required]
         public string Description { get; set; } = string.Empty;
         /// <summary>
-        /// پاسخ مشکل
-        /// </summary>
-        public string? Respond { get; set; }
-        /// <summary>
         /// منبع
         /// </summary>
         [Required]
@@ -47,10 +43,6 @@ namespace Domain.Entities
         /// الحاقیات
         /// </summary>
         public string? Resources { get; set; }
-        /// <summary>
-        /// میزان شباهت
-        /// </summary>
-        public byte? Similarity { get; set; }
         /// <summary>
         /// اولویت
         /// </summary>
@@ -79,6 +71,17 @@ namespace Domain.Entities
         /// وضعیت فیدبک
         /// </summary>
         public FeedbackState State { get; set; }
+
+        /// <summary>
+        /// پاسخ مشکل
+        /// </summary>
+        public string? Respond { get; set; }
+
+        /// <summary>
+        /// میزان شباهت
+        /// </summary>
+        public byte? Similarity { get; set; }
+
 
         /// <summary>
         /// شماره سریال
