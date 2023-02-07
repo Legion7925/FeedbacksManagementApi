@@ -3,13 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    public class Expert
+    public class ExpertBase
     {
-        public int Id { get; set; }
         /// <summary>
-        /// نام و نام خانوادگی
+        /// نام 
         /// </summary>
-        public string? NameAndFamily { get; set; }
+        public string? FirstName { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>  
+        public string? LastName { get; set; }
         /// <summary>
         /// کد ملی
         /// </summary>
@@ -63,23 +66,29 @@ namespace Domain.Entities
         /// </summary>
         public string? Address { get; set; }
         /// <summary>
-        /// تاریخ عضویت
+        /// کلید خارجی از جدول تخصص 
         /// </summary>
-        public DateTime Created { get; set; }
+        [ForeignKey(nameof(Specialty))]
+        public int FkIdExpertise { get; set; }
+
+    }
+    public class Expert : ExpertBase
+    {
+        public int Id { get; set; }
+
+        public ICollection<Feedback>? Feedbacks { get; set; }
+
         /// <summary>
         /// تعداد مورد های پاسخ داده شده
         /// </summary>
         public int AnsweredCount => Feedbacks?.Count ?? 0;
-        /// <summary>
-        /// کلید خارجی از جدول تخصص 
-        /// </summary>
-        public int FkIdExpertise { get; set; }
-        /// <summary>
-        /// تخصص 
-        /// </summary>
-        [ForeignKey(nameof(FkIdExpertise))]
-        public Specialty? Expertise { get; set; }
 
-        public ICollection<Feedback>? Feedbacks { get; set; }
+        /// <summary>
+        /// تاریخ عضویت
+        /// </summary>
+        public DateTime Created { get; set; }
+
+
+        public Specialty? Specialty { get; set; }
     }
 }
