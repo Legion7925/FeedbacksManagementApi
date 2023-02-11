@@ -5,10 +5,18 @@ namespace Infrastructure.Data
 {
     public class FeedbacksDbContext : DbContext
     {
-        public FeedbacksDbContext(DbContextOptions<FeedbacksDbContext> options)
-            :base(options)
+        public FeedbacksDbContext()
         {
 
+        }
+
+        public FeedbacksDbContext(DbContextOptions options)
+            :base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
         }
 
         public DbSet<Customer> Customers { get; set; }

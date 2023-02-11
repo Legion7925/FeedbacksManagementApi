@@ -10,7 +10,7 @@ builder.Services.AddDbContext<FeedbacksDbContext>(options => options.UseSqlServe
 builder.Services.AddScoped<ICasesRepository, CasesRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IExpertRepository, ExpertRepository>();
-
+//migrate database if it doesn't exist
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
@@ -18,13 +18,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+//migrate database if doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FeedbacksDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
