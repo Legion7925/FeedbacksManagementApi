@@ -10,5 +10,5 @@ public interface ICasesRepository
     Task<Case?> GetCaseById(int caseId);
     IEnumerable<Case> GetCases();
     Task UpdateCase(CaseBase feedbackCase, int caseId);
-    Task SubmitForRespond(CaseBase feedbackCase);
+    Task SubmitForRespond(int caseId);
 }

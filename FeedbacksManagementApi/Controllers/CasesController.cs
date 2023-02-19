@@ -17,7 +17,7 @@ public class CasesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetCases()
+    public ActionResult<IEnumerable<Case>> GetCases()
     {
         try
         {
@@ -52,11 +52,12 @@ public class CasesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> SubmitForAnswer([FromBody] CaseBase @case)
+    [Route("{caseId}")]
+    public async Task<IActionResult> SubmitCaseForAnswer([FromRoute] int caseId)
     {
         try
         {
-            await caseRepository.SubmitForRespond(@case);
+            await caseRepository.SubmitForRespond(caseId);
             return Ok("ارسال مورد برای پاسخ دهی با موفقیت انجام شد");
         }
         catch (AppException ax)

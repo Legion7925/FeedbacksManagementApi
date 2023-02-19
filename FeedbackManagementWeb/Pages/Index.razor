@@ -1,8 +1,15 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
+<MudTable T="Case" Class="m-3" Items="@casesList" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info"
+          MultiSelection="true" @bind-SelectedItems="selectedCases">
+    <HeaderContent>
+        <MudTh Style="text-align:center">عنوان</MudTh>
+        <MudTh Style="text-align:center">منشاء</MudTh>
+        <MudTh Style="text-align:center">آدرس</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd Style="text-align:center" DataLabel="عنوان">@context.Title</MudTd>
+        <MudTd Style="text-align:center" DataLabel="منشاء">@context.Source</MudTd>
+        <MudTd Style="text-align:center" DataLabel="آدرس">@context.SourceAddress</MudTd>
+    </RowTemplate>
+</MudTable>

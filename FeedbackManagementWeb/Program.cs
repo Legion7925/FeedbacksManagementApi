@@ -1,11 +1,19 @@
+using FeedbackManagementWeb.Helper;
+using FeedbackManagementWeb.Interface;
+using FeedbackManagementWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMudServices();
+builder.Services.AddScoped<ICaseService, CaseService>();
+
+AppSettings.ApiBaseUrl = builder.Configuration["ApiUrl"] ?? string.Empty;
 
 var app = builder.Build();
 

@@ -106,9 +106,9 @@ namespace FeedbacksManagementApi.Repository
         /// <param name="feedbackCase"></param>
         /// <returns></returns>
         /// <exception cref="AppException"></exception>
-        public async Task SubmitForRespond(CaseBase feedbackCase)
+        public async Task SubmitForRespond(int caseId)
         {
-            await ValidateForeignKeys(feedbackCase.FkIdCustomer, feedbackCase.FkIdProduct);
+            var feedbackCase = await GetCaseById(caseId);
             var feedback = mapper.Map<Feedback>(feedbackCase);
             feedback.State = FeedbackState.ReadyToSend;
             feedback.SerialNumber = $"{DateTime.Now.Ticks}";

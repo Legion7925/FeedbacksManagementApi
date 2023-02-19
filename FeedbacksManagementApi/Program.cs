@@ -16,6 +16,16 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowOrigin",
+        builder =>
+        {
+            builder.WithOrigins("https://localhost:7255", "http://localhost:5068")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 //migrate database if doesn't exist
@@ -33,7 +43,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
