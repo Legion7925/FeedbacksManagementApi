@@ -46,18 +46,27 @@ namespace FeedbackManagementWeb
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Case>> GetCasesAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CaseReport>> GetCasesAsync(int? skip, int? take)
         {
-            return GetCasesAsync(System.Threading.CancellationToken.None);
+            return GetCasesAsync(skip, take, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Case>> GetCasesAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CaseReport>> GetCasesAsync(int? skip, int? take, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Cases/GetCases");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Cases/GetCases?");
+            if (skip != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("skip") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skip, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (take != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("take") + "=").Append(System.Uri.EscapeDataString(ConvertToString(take, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             try
@@ -87,7 +96,7 @@ namespace FeedbackManagementWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Case>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CaseReport>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -97,7 +106,7 @@ namespace FeedbackManagementWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(System.Collections.Generic.ICollection<Case>);
+                        return default(System.Collections.Generic.ICollection<CaseReport>);
                     }
                     finally
                     {
@@ -179,21 +188,21 @@ namespace FeedbackManagementWeb
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task SubmitForAnswerAsync(int caseId)
+        public System.Threading.Tasks.Task SubmitCaseForAnswerAsync(int caseId)
         {
-            return SubmitForAnswerAsync(caseId, System.Threading.CancellationToken.None);
+            return SubmitCaseForAnswerAsync(caseId, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task SubmitForAnswerAsync(int caseId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task SubmitCaseForAnswerAsync(int caseId, System.Threading.CancellationToken cancellationToken)
         {
             if (caseId == null)
                 throw new System.ArgumentNullException("caseId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Cases/SubmitForAnswer/{caseId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Cases/SubmitCaseForAnswer/{caseId}");
             urlBuilder_.Replace("{caseId}", System.Uri.EscapeDataString(ConvertToString(caseId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -247,7 +256,7 @@ namespace FeedbackManagementWeb
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task GetCaseByIdAsync(int id)
+        public System.Threading.Tasks.Task<CaseReport> GetCaseByIdAsync(int id)
         {
             return GetCaseByIdAsync(id, System.Threading.CancellationToken.None);
         }
@@ -255,7 +264,7 @@ namespace FeedbackManagementWeb
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task GetCaseByIdAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<CaseReport> GetCaseByIdAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -270,6 +279,7 @@ namespace FeedbackManagementWeb
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -291,7 +301,8 @@ namespace FeedbackManagementWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<CaseReport>(response_, headers_).ConfigureAwait(false);
+                            return objectResponse_.Object;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -299,6 +310,8 @@ namespace FeedbackManagementWeb
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
+            
+                        return default(CaseReport);
                     }
                     finally
                     {
@@ -1486,7 +1499,37 @@ namespace FeedbackManagementWeb
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class Case 
+    public partial class CaseBase 
+    {
+        [Newtonsoft.Json.JsonProperty("source", Required = Newtonsoft.Json.Required.Always)]
+        public Source Source { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Title { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Description { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("sourceAddress", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string SourceAddress { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("resources", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Resources { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("fkIdCustomer", Required = Newtonsoft.Json.Required.Always)]
+        public int FkIdCustomer { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("fkIdProduct", Required = Newtonsoft.Json.Required.Always)]
+        public int FkIdProduct { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class CaseReport 
     {
         [Newtonsoft.Json.JsonProperty("source", Required = Newtonsoft.Json.Required.Always)]
         public Source Source { get; set; }
@@ -1515,35 +1558,14 @@ namespace FeedbackManagementWeb
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Id { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("sourceTranslate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SourceTranslate { get; set; }
     
-    }
+        [Newtonsoft.Json.JsonProperty("customerName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CustomerName { get; set; }
     
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class CaseBase 
-    {
-        [Newtonsoft.Json.JsonProperty("source", Required = Newtonsoft.Json.Required.Always)]
-        public Source Source { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Title { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Description { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("sourceAddress", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string SourceAddress { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("resources", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Resources { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("fkIdCustomer", Required = Newtonsoft.Json.Required.Always)]
-        public int FkIdCustomer { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("fkIdProduct", Required = Newtonsoft.Json.Required.Always)]
-        public int FkIdProduct { get; set; }
+        [Newtonsoft.Json.JsonProperty("productName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ProductName { get; set; }
     
     
     }

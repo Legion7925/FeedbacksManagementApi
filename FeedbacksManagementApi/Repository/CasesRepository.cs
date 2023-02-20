@@ -23,19 +23,40 @@ namespace FeedbacksManagementApi.Repository
         /// دریافت لیست مورد های ثبت شده
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Case> GetCases()
+        public IEnumerable<CaseReport> GetCases(int take, int skip)
         {
-            return context.Cases.AsNoTracking().AsEnumerable();
+            var cases = context.Cases.AsNoTracking().Skip(skip).Take(take)
+                .Include(c => c.Customer).Include(c => c.Product)
+                .Select(c => new CaseReport
+                {
+                    CustomerName = c.Customer!.NameAndFamily,
+                    Description = c.Description,
+                    FkIdCustomer = c.FkIdCustomer,
+                    Id = c.Id,
+                    ProductName = c.Product!.Name,
+                    Resources= c.Resources,
+                    Source = c.Source,
+                    SourceAddress= c.SourceAddress,
+                    Title= c.Title,
+                    FkIdProduct = c.FkIdProduct, 
+                });
+            return cases;
         }
         /// <summary>
         /// دریافت یک مورد بر اساس آیدی
         /// </summary>
         /// <param name="caseId">آیدی مورد</param>
         /// <returns></returns>
-        public async Task<Case?> GetCaseById(int caseId)
+        public async Task<CaseReport> GetOneCase(int caseId)
         {
+            var @case = await context.Cases.Include(i=> i.Customer).Include(i=>i.Product).FirstOrDefaultAsync(i => i.Id == caseId);
+            if (@case == null) throw new AppException("مورد یافت نشد");
 
-            return await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
+            var foundCase = mapper.Map<CaseReport>(@case);
+            foundCase.ProductName = @case.Product?.Name ?? "نامشخص";
+            foundCase.CustomerName = @case.Customer?.NameAndFamily ?? "نامشخص";
+
+            return foundCase;
         }
         /// <summary>
         /// اضافه کردن مورد جدید
@@ -61,10 +82,6 @@ namespace FeedbacksManagementApi.Repository
         {
             await ValidateForeignKeys(feedbackCase.FkIdCustomer, feedbackCase.FkIdProduct);
             var feedback = await GetCaseById(caseId);
-            if (feedback == null)
-            {
-                throw new AppException("مورد یافت نشد");
-            }
 
             feedback.Title = feedbackCase.Title;
             feedback.Description = feedbackCase.Description;
@@ -109,11 +126,16 @@ namespace FeedbacksManagementApi.Repository
         public async Task SubmitForRespond(int caseId)
         {
             var feedbackCase = await GetCaseById(caseId);
+            if (feedbackCase == null)
+            {
+                throw new AppException("مورد یافت نشد");
+            }
             var feedback = mapper.Map<Feedback>(feedbackCase);
             feedback.State = FeedbackState.ReadyToSend;
             feedback.SerialNumber = $"{DateTime.Now.Ticks}";
             feedback.Created = DateTime.Now;
             await context.Feedbacks.AddAsync(feedback);
+            context.Cases.Remove(feedbackCase);
             await context.SaveChangesAsync();
         }
         /// <summary>
@@ -129,6 +151,19 @@ namespace FeedbacksManagementApi.Repository
             if (customerExist is not true) throw new AppException("کد مشتری یافت نشد");
             var productExist = await context.Products.AnyAsync(i => i.Id == productId);
             if (productExist is not true) throw new AppException("کد محصول یافت نشد");
+        }
+        /// <summary>
+        /// دریافت یک مورد بدون شامل کردن ارتباطات دیتابیسی این تابع فقط در داخل این  
+        /// کلاس برای حذف و ویرایش مورد استفاده قرار میگیرد
+        /// </summary>
+        /// <param name="caseId"></param>
+        /// <returns></returns>
+        /// <exception cref="AppException"></exception>
+        private async Task<Case> GetCaseById(int caseId)
+        {
+            var @case = await context.Cases.FirstOrDefaultAsync(i => i.Id == caseId);
+            if (@case is null) throw new AppException("مورد یافت نشد");
+            return @case;
         }
     }
 }

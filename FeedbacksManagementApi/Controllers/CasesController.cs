@@ -17,11 +17,11 @@ public class CasesController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Case>> GetCases()
+    public ActionResult<IEnumerable<CaseReport>> GetCases(int skip , int take)
     {
         try
         {
-            return Ok(caseRepository.GetCases());
+            return Ok(caseRepository.GetCases(take,skip));
         }
         catch(AppException ax)
         {
@@ -72,11 +72,11 @@ public class CasesController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<IActionResult> GetCaseById(int id)
+    public async Task<ActionResult<CaseReport>> GetCaseById(int id)
     {
         try
         {
-            return Ok(await caseRepository.GetCaseById(id));
+            return Ok(await caseRepository.GetOneCase(id));
         }
         catch (AppException ax)
         {

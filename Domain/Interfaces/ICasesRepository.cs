@@ -7,8 +7,8 @@ public interface ICasesRepository
     Task AddCase(CaseBase feedbackCase);
     Task DeleteCase(int caseId);
     Task DeleteMultipleCases(int[] caseIds);
-    Task<Case?> GetCaseById(int caseId);
-    IEnumerable<Case> GetCases();
+    Task<CaseReport> GetOneCase(int caseId);
+    IEnumerable<CaseReport> GetCases(int take, int skip);
     Task UpdateCase(CaseBase feedbackCase, int caseId);
     Task SubmitForRespond(int caseId);
 }

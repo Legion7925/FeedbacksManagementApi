@@ -10,6 +10,26 @@
         "tags": [
           "Cases"
         ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -18,7 +38,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Case"
+                    "$ref": "#/components/schemas/CaseReport"
                   }
                 }
               },
@@ -26,7 +46,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Case"
+                    "$ref": "#/components/schemas/CaseReport"
                   }
                 }
               },
@@ -34,7 +54,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Case"
+                    "$ref": "#/components/schemas/CaseReport"
                   }
                 }
               }
@@ -117,7 +137,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseReport"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseReport"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseReport"
+                }
+              }
+            }
           }
         }
       }
@@ -703,7 +740,48 @@
   },
   "components": {
     "schemas": {
-      "Case": {
+      "CaseBase": {
+        "required": [
+          "description",
+          "fkIdCustomer",
+          "fkIdProduct",
+          "source",
+          "sourceAddress",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sourceAddress": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "fkIdCustomer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fkIdProduct": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CaseReport": {
         "required": [
           "description",
           "fkIdCustomer",
@@ -744,47 +822,19 @@
           "id": {
             "type": "integer",
             "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CaseBase": {
-        "required": [
-          "description",
-          "fkIdCustomer",
-          "fkIdProduct",
-          "source",
-          "sourceAddress",
-          "title"
-        ],
-        "type": "object",
-        "properties": {
-          "source": {
-            "$ref": "#/components/schemas/Source"
           },
-          "title": {
-            "minLength": 1,
-            "type": "string"
+          "sourceTranslate": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
           },
-          "description": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "sourceAddress": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "resources": {
+          "customerName": {
             "type": "string",
             "nullable": true
           },
-          "fkIdCustomer": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fkIdProduct": {
-            "type": "integer",
-            "format": "int32"
+          "productName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

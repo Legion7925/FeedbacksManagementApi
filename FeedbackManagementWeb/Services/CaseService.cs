@@ -5,7 +5,7 @@ namespace FeedbackManagementWeb.Services
 {
     public class CaseService : ICaseService
     {
-        public async Task<IEnumerable<Case>> GetCases()
+        public async Task<IEnumerable<CaseReport>> GetCases(int take , int skip)
         {
             try
             {
@@ -13,7 +13,7 @@ namespace FeedbackManagementWeb.Services
                 {
 
                     var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
-                    var response = await client.GetCasesAsync();
+                    var response = await client.GetCasesAsync(skip , take);
                     return response;
                 }
             }
@@ -86,7 +86,7 @@ namespace FeedbackManagementWeb.Services
                 {
 
                     var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
-                    await client.SubmitForAnswerAsync(caseId);
+                    await client.SubmitCaseForAnswerAsync(caseId);
                 }
             }
             catch (Exception)

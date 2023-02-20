@@ -66,3 +66,19 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.mud-typography {
+    font-family: Vazir !important;
+}
+
+p.mud-typography.mud-typography-body1.mud-inherit-text {
+    line-height: 2.5rem;
+}
+
+h5.mud-typography {
+    font-family: Vazir !important;
+}
+
+.mud-button {
+    font-family: Vazir !important;
+}

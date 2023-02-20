@@ -1,4 +1,5 @@
-﻿using Domain.Shared.Enums;
+﻿using Domain.Helper;
+using Domain.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -60,5 +61,16 @@ namespace Domain.Entities
 
         [JsonIgnore]
         public Product? Product { get; set; }
+
+
+    }
+
+    public class CaseReport : Case
+    {
+        public string SourceTranslate => Source.TranslateSource();
+
+        public string? CustomerName { get; set; }
+
+        public string? ProductName { get; set; }
     }
 }

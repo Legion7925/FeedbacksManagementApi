@@ -32,4 +32,8 @@
     <OpenApiReference Include="Refrence\swagger.json" CodeGenerator="NSwagCSharp" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

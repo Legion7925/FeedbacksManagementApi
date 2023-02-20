@@ -1,0 +1,20 @@
+﻿<MudRTLProvider RightToLeft="true">
+    <MudDialog Style="font-family:Vazir;">
+        <DialogContent>
+            <MudText Style="font-family:Vazir;">@ContentText</MudText>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Style="font-family:Vazir;" Variant="Variant.Filled" OnClick="Cancel">انصراف</MudButton>
+            <MudButton Color="@Color.Error" Style="font-family:Vazir;" Variant="Variant.Filled" OnClick="Submit">حذف</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudRTLProvider>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new();
+
+    [Parameter]
+    public string ContentText { get; set; } = string.Empty;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}
