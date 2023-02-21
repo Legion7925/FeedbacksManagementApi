@@ -18,4 +18,8 @@ public enum FeedbackState : byte
     /// بایگانی شده
     /// </summary>
     Archived = 3,
+    /// <summary>
+    /// پاسخ داده شده
+    /// </summary>
+    Answered = 3,
 }

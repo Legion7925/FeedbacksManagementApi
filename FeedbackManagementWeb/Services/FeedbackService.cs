@@ -5,7 +5,7 @@ namespace FeedbackManagementWeb.Services
 {
     public class FeedbackService : IFeedbackService
     {
-        public async Task<IEnumerable<FeedbackReport>> GetFeedbacks(int take, int skip)
+        public async Task<IEnumerable<FeedbackReport>> GetFeedbacks(int take, int skip , FeedbackState state)
         {
             try
             {
@@ -13,16 +13,17 @@ namespace FeedbackManagementWeb.Services
                 {
 
                     var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
-                    var response = await client.GetFeedbacksAsync(take,skip );
+                    var response = await client.GetFeedbacksAsync(take,skip ,state);
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("خطا در دریافت مورد های رسیده");
+                throw new Exception("خطا در دریافت مورد ها");
                 //todo log error
             }
         }
+
         public async Task<IEnumerable<FeedbackReport>> GetFeedbackReport(FeedbackReportFilterModel filter)
         {
             try
@@ -129,6 +130,24 @@ namespace FeedbackManagementWeb.Services
             catch (Exception)
             {
                 throw new Exception("خطا در بایگانی مورد");
+                //todo log error
+            }
+        }
+
+        public async Task RecycleFeedbacks(int[] feedbackIds)
+        {
+            try
+            {
+                using (var http = new HttpClient())
+                {
+
+                    var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
+                    await client.RecycleFeedbacksAsync(feedbackIds);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("خطا در بازیابی مورد");
                 //todo log error
             }
         }

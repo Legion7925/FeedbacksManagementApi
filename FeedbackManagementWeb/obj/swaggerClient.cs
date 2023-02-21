@@ -934,15 +934,15 @@ namespace FeedbackManagementWeb
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FeedbackReport>> GetFeedbacksAsync(int? take, int? skip)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FeedbackReport>> GetFeedbacksAsync(int? take, int? skip, FeedbackState? state)
         {
-            return GetFeedbacksAsync(take, skip, System.Threading.CancellationToken.None);
+            return GetFeedbacksAsync(take, skip, state, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FeedbackReport>> GetFeedbacksAsync(int? take, int? skip, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FeedbackReport>> GetFeedbacksAsync(int? take, int? skip, FeedbackState? state, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Feedbacks/GetFeedbacks?");
@@ -953,6 +953,10 @@ namespace FeedbackManagementWeb
             if (skip != null) 
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("skip") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skip, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (state != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("state") + "=").Append(System.Uri.EscapeDataString(ConvertToString(state, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1430,6 +1434,72 @@ namespace FeedbackManagementWeb
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Feedbacks/ArchiveFeedbacks");
+    
+            var client_ = _httpClient;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200") 
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+            }
+        }
+    
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task RecycleFeedbacksAsync(System.Collections.Generic.IEnumerable<int> body)
+        {
+            return RecycleFeedbacksAsync(body, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task RecycleFeedbacksAsync(System.Collections.Generic.IEnumerable<int> body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Feedbacks/RecycleFeedbacks");
     
             var client_ = _httpClient;
             try
@@ -2098,14 +2168,27 @@ namespace FeedbackManagementWeb
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
     public enum FeedbackState
     {
-        _0 = 0,
-    
-        _1 = 1,
-    
-        _2 = 2,
-    
-        _3 = 3,
-    
+        /// <summary>
+        /// آماده ارسال
+        /// </summary>
+        ReadyToSend = 0,
+        /// <summary>
+        /// ارسال شده به متخصص
+        /// </summary>
+        SentToExpert = 1,
+        /// <summary>
+        /// حذف شده
+        /// </summary>
+        Deleted = 2,
+        /// <summary>
+        /// بایگانی شده
+        /// </summary>
+        Archived = 3,
+        /// <summary>
+        /// پاسخ داده شده
+        /// </summary>
+        Answered = 3,
+
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]

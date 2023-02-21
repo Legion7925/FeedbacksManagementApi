@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Shared.Enums;
 using FeedbacksManagementApi.Model;
 using FeedbacksManagementApi.Repository;
 using Infrastructure.Exceptions;
@@ -20,11 +21,11 @@ namespace FeedbacksManagementApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<FeedbackReport>> GetFeedbacks(int take , int skip)
+        public ActionResult<IEnumerable<FeedbackReport>> GetFeedbacks(int take , int skip , FeedbackState state)
         {
             try
             {
-                return Ok(feedbackRepository.GetFeedbacks(take,skip));
+                return Ok(feedbackRepository.GetFeedbacks(take,skip,state));
             }
             catch (AppException ax)
             {
@@ -164,6 +165,24 @@ namespace FeedbacksManagementApi.Controllers
             catch (Exception)
             {
                 return BadRequest("خطا در بایگانی موارد");
+            }
+        }
+
+        [HttpPost] 
+        public async Task<IActionResult> RecycleFeedbacks(int[] feedbackIds)
+        {
+            try
+            {
+                await feedbackRepository.RecycleFeedbacks(feedbackIds);
+                return Ok("موارد ارسالی با موفقیت بازیابی شدند");
+            }
+            catch (AppException ax)
+            {
+                return BadRequest(ax.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("خطا در بازیابی موارد");
             }
         }
 

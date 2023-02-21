@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Shared.Enums;
 using FeedbacksManagementApi.Model;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,11 @@ namespace Domain.Interfaces
         Task DeleteFeedbacks(int[] feedbackIds);
         Task<Feedback?> GetFeedbackById(int feedbackId);
         IEnumerable<FeedbackReport> GetFeedbackReport(FeedbackReportFilterModel filterModel);
-        IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip);
+        IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip, FeedbackState state);
         Task SubmitFeedbacksToExpert(SubmitFeedbacksRequestModel submitModel);
         Task UpdateFeedback(FeedbackBase feedbackBase, int feedbackId);
         Task<FeedbackReport> GetOneFeedback(int feedbackId);
         Task<int> GetFeedbacksCount();
-
+        Task RecycleFeedbacks(int[] feedbackIds);
     }
 }

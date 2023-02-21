@@ -1,5 +1,4 @@
 ﻿using FeedbackManagementWeb.Interface;
-using FeedbackManagementWeb.Services;
 using FeedbackManagementWeb.Shared.Dialog;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Components;
@@ -7,7 +6,7 @@ using MudBlazor;
 
 namespace FeedbackManagementWeb.Pages
 {
-    partial class Feedback
+    partial class DeletedFeedbacks
     {
         [Inject]
         private IFeedbackService FeedbackService { get; set; } = default!;
@@ -39,7 +38,7 @@ namespace FeedbackManagementWeb.Pages
                     //if we don't fill the total items and the items we will get a null refrence exception
                     return new TableData<FeedbackReport>() { TotalItems = 0, Items = new List<FeedbackReport>() };
                 }
-                feedbackList = await FeedbackService.GetFeedbacks(state.PageSize, state.Page * state.PageSize , FeedbackState.ReadyToSend);
+                feedbackList = await FeedbackService.GetFeedbacks(state.PageSize, state.Page * state.PageSize, FeedbackState.Deleted);
 
                 return new TableData<FeedbackReport>() { TotalItems = totalItems, Items = feedbackList };
             }
@@ -50,27 +49,27 @@ namespace FeedbackManagementWeb.Pages
             }
         }
 
-        public async Task DeleteSelectedCases()
+        public async Task RecycleSelectedCases()
         {
             try
             {
                 var feedbackIds = selectedFeedbacks.Select(i => i.Id).ToArray();
                 if (!feedbackIds.Any())
                 {
-                    Snackbar.Add("موردی برای حذف انتخاب نشده است", Severity.Warning);
+                    Snackbar.Add("موردی برای بازیابی انتخاب نشده است", Severity.Warning);
                     return;
                 }
                 DialogOptions options = new DialogOptions() { CloseOnEscapeKey = true };
                 DialogParameters parmeters = new DialogParameters();
-                parmeters.Add("ContentText", $"آیا از حذف موارد انتخابی اطمینان دارید ");
-                parmeters.Add("ButtonText", "حذف");
-                parmeters.Add("Color", Color.Error);
+                parmeters.Add("ContentText", $"آیا از بازیابی موارد انتخابی اطمینان دارید ");
+                parmeters.Add("ButtonText", "بازیابی موارد");
+                parmeters.Add("Color", Color.Info);
                 var dialodDelete = DialogService.Show<MessageDialog>("", parmeters, options);
                 var result = await dialodDelete.Result;
                 if (!result.Canceled)
                 {
-                    await FeedbackService.DeleteFeedbacks(feedbackIds);
-                    Snackbar.Add("عملیات حذف با موفقیت انجام شد", Severity.Success);
+                    await FeedbackService.RecycleFeedbacks(feedbackIds);
+                    Snackbar.Add("عملیات بازیابی با موفقیت انجام شد", Severity.Success);
                     await _table!.ReloadServerData();
                     StateHasChanged();
                 }
@@ -117,25 +116,6 @@ namespace FeedbackManagementWeb.Pages
             catch (Exception ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
-            }
-        }
-
-        public async Task OpenSubmitToExpertDialog()
-        {
-            var idList = selectedFeedbacks.Select(i => i.Id).ToList();
-            if (!idList.Any())
-            {
-                Snackbar.Add("موردی برای ارسال انتخاب نشده" , Severity.Warning);
-            }
-            DialogOptions options = new DialogOptions() { CloseOnEscapeKey = true , CloseButton=false};
-            DialogParameters parmeters = new DialogParameters();
-            parmeters.Add("FeedbackIds", idList);
-            var submitDialog = DialogService.Show<SubmitFeedbackToExpertDialog>("", parmeters, options);
-            var result = await submitDialog.Result;
-            if (!result.Canceled)
-            {
-                await _table!.ReloadServerData();
-                StateHasChanged();
             }
         }
     }

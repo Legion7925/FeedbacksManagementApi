@@ -25,9 +25,9 @@ public class FeedbackRepository : IFeedbackRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="AppException"></exception>
-    public IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip)
+    public IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip , FeedbackState state)
     {
-        return context.Feedbacks.AsNoTracking()
+        return context.Feedbacks.AsNoTracking().Where(i=>i.State == state)
             .Skip(skip).Take(take).Include(c => c.Customer).Include(c => c.Product)
                 .Select(c => new FeedbackReport
                 {
@@ -185,6 +185,19 @@ public class FeedbackRepository : IFeedbackRepository
             .ExecuteUpdateAsync(f => f.SetProperty(p => p.State, p => FeedbackState.Archived));
     }
     /// <summary>
+    /// بازیابی موارد
+    /// </summary>
+    /// <param name="feedbackIds"></param>
+    /// <returns></returns>
+    public async Task RecycleFeedbacks(int[] feedbackIds)
+    {
+        if (!feedbackIds.Any())
+            throw new AppException("لیست موارد ارسالی نمیتواند خالی باشد");
+
+        await context.Feedbacks.Where(i => feedbackIds.Contains(i.Id))
+            .ExecuteUpdateAsync(f => f.SetProperty(p => p.State, p => FeedbackState.ReadyToSend));
+    }
+    /// <summary>
     /// گزارش از موارد با فیلتر
     /// </summary>
     /// <param name="filterModel"></param>
@@ -243,4 +256,5 @@ public class FeedbackRepository : IFeedbackRepository
         var productExist = await context.Products.AnyAsync(i => i.Id == productId);
         if (productExist is not true) throw new AppException("کد محصول یافت نشد");
     }
+
 }
