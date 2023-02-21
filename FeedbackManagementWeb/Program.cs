@@ -25,6 +25,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 AppSettings.ApiBaseUrl = builder.Configuration["ApiUrl"] ?? string.Empty;
 

@@ -33,6 +33,23 @@ public class CasesController : ControllerBase
         }
     }
 
+    [HttpGet]
+    public async Task<ActionResult<int>> GetCasesCount()
+    {
+        try
+        {
+            return Ok(await caseRepository.GetCasesCount());
+        }
+        catch(AppException ax)
+        {
+            return BadRequest(ax.Message);
+        }
+        catch(Exception)
+        {
+            return BadRequest("خطا در دریافت تعداد");
+        }
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddCase([FromBody]CaseBase @case)
     {

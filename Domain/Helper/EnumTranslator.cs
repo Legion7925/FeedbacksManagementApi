@@ -25,5 +25,36 @@ namespace Domain.Helper
                     return "ناشناس";
             }
         }
+        public static string state(this FeedbackState state)
+        {
+            switch (state)
+            {
+                case FeedbackState.ReadyToSend:
+                    return "آماده ارسال";
+                case FeedbackState.SentToExpert:
+                    return "ارسال شده به متخصص";
+                case FeedbackState.Deleted:
+                    return "حذف شده";
+                case FeedbackState.Archived:
+                    return "بایگانی شده";
+                default:
+                    return "نامشخص";
+            }
+        }
+
+        public static string TranslatePoriorty(this Priority priority)
+        {
+            switch (priority)
+            {
+                case Priority.Low:
+                    return "پایین";
+                case Priority.Medium:
+                    return "معمولی";
+                case Priority.High:
+                    return "بالا";
+                default:
+                    return "نامشخص";
+            }
+        }
     }
 }

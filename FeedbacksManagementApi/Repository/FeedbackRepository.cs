@@ -25,9 +25,56 @@ public class FeedbackRepository : IFeedbackRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="AppException"></exception>
-    public IEnumerable<Feedback> GetFeedbacks()
+    public IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip)
     {
-        return context.Feedbacks.AsNoTracking().AsEnumerable();
+        return context.Feedbacks.AsNoTracking()
+            .Skip(skip).Take(take).Include(c => c.Customer).Include(c => c.Product)
+                .Select(c => new FeedbackReport
+                {
+                    CustomerName = c.Customer!.NameAndFamily,
+                    Description = c.Description,
+                    FkIdCustomer = c.FkIdCustomer,
+                    Id = c.Id,
+                    ProductName = c.Product!.Name,
+                    Resources = c.Resources,
+                    Source = c.Source,
+                    SourceAddress = c.SourceAddress,
+                    Title = c.Title,
+                    FkIdProduct = c.FkIdProduct,
+                    RespondDate = c.RespondDate,
+                    Created = c.Created,
+                    Priorty = c.Priorty,
+                    Respond = c.Respond,
+                    ReferralDate = c.ReferralDate,
+                    Similarity = c.Similarity,
+                    SerialNumber = c.SerialNumber ,
+                    State = c.State,
+                });
+
+    }
+    /// <summary>
+    /// تعداد مورد های رسیده
+    /// </summary>
+    /// <returns></returns>
+    public async Task<int> GetFeedbacksCount()
+    {
+        return await context.Feedbacks.CountAsync();
+    }
+    /// <summary>
+    /// دریافت یک مورد بر اساس آیدی
+    /// </summary>
+    /// <param name="feedbackId">آیدی مورد</param>
+    /// <returns></returns>
+    public async Task<FeedbackReport> GetOneFeedback(int feedbackId)
+    {
+        var feedback = await context.Feedbacks.Include(i => i.Customer).Include(i => i.Product).FirstOrDefaultAsync(i => i.Id == feedbackId);
+        if (feedback == null) throw new AppException("مورد یافت نشد");
+
+        var foundFeedback = mapper.Map<FeedbackReport>(feedback);
+        foundFeedback.ProductName = feedback.Product?.Name ?? "نامشخص";
+        foundFeedback.CustomerName = feedback.Customer?.NameAndFamily ?? "نامشخص";
+
+        return foundFeedback;
     }
     /// <summary>
     /// گرفتن اطلاعات یک مورد
@@ -142,7 +189,7 @@ public class FeedbackRepository : IFeedbackRepository
     /// </summary>
     /// <param name="filterModel"></param>
     /// <returns></returns>
-    public IEnumerable<Feedback> GetFeedbackReport(FeedbackReportFilterModel filterModel)
+    public IEnumerable<FeedbackReport> GetFeedbackReport(FeedbackReportFilterModel filterModel)
     {
         var feedbacks = context.Feedbacks.AsNoTracking();
         if (filterModel.ProductId is not 0) feedbacks = feedbacks.Where(i => i.FkIdProduct == filterModel.ProductId);
@@ -160,7 +207,27 @@ public class FeedbackRepository : IFeedbackRepository
         if (!string.IsNullOrEmpty(filterModel.Respond)) feedbacks = feedbacks.Where(i => i.Respond == filterModel.Respond);
         if (!string.IsNullOrEmpty(filterModel.Title)) feedbacks = feedbacks.Where(i => i.Title == filterModel.Title);
         if (!string.IsNullOrEmpty(filterModel.SerialNumber)) feedbacks = feedbacks.Where(i => i.SerialNumber == filterModel.SerialNumber);
-        return feedbacks.AsEnumerable();
+        return feedbacks.Skip(filterModel.Skip).Take(filterModel.Take).Select(c => new FeedbackReport
+        {
+            CustomerName = c.Customer!.NameAndFamily,
+            Description = c.Description,
+            FkIdCustomer = c.FkIdCustomer,
+            Id = c.Id,
+            ProductName = c.Product!.Name,
+            Resources = c.Resources,
+            Source = c.Source,
+            SourceAddress = c.SourceAddress,
+            Title = c.Title,
+            FkIdProduct = c.FkIdProduct,
+            RespondDate = c.RespondDate,
+            Created = c.Created,
+            Priorty = c.Priorty,
+            Respond = c.Respond,
+            ReferralDate = c.ReferralDate,
+            Similarity = c.Similarity,
+            SerialNumber = c.SerialNumber,
+            State = c.State,
+        });
     }
     /// <summary>
     /// اعتبارسنجی وجود آیدی مشتری و محصول

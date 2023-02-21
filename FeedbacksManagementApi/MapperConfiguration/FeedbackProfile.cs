@@ -8,6 +8,7 @@ namespace Infrastructure.MapperConfiguration
         public FeedbackProfile()
         {
             CreateMap<FeedbackBase, Feedback>();
+            CreateMap<Feedback, FeedbackReport>();
         }
     }
 }

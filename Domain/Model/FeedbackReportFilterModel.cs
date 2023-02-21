@@ -5,6 +5,10 @@ namespace FeedbacksManagementApi.Model
 {
     public class FeedbackReportFilterModel
     {
+        public int Take { get; set; }
+
+        public int Skip { get; set; }
+
         public DateTime? Created { get; set; }
 
         public DateTime? ReferralDate { get; set; }

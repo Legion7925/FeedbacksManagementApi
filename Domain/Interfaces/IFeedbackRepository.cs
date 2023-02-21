@@ -14,10 +14,12 @@ namespace Domain.Interfaces
         Task ArchiveFeedbacks(int[] feedbackIds);
         Task DeleteFeedbacks(int[] feedbackIds);
         Task<Feedback?> GetFeedbackById(int feedbackId);
-        IEnumerable<Feedback> GetFeedbackReport(FeedbackReportFilterModel filterModel);
-        IEnumerable<Feedback> GetFeedbacks();
+        IEnumerable<FeedbackReport> GetFeedbackReport(FeedbackReportFilterModel filterModel);
+        IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip);
         Task SubmitFeedbacksToExpert(SubmitFeedbacksRequestModel submitModel);
         Task UpdateFeedback(FeedbackBase feedbackBase, int feedbackId);
+        Task<FeedbackReport> GetOneFeedback(int feedbackId);
+        Task<int> GetFeedbacksCount();
 
     }
 }

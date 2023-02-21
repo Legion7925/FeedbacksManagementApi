@@ -43,6 +43,14 @@ namespace FeedbacksManagementApi.Repository
             return cases;
         }
         /// <summary>
+        /// تعداد مورد های رسیده
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetCasesCount()
+        {
+            return await context.Cases.CountAsync();
+        }
+        /// <summary>
         /// دریافت یک مورد بر اساس آیدی
         /// </summary>
         /// <param name="caseId">آیدی مورد</param>

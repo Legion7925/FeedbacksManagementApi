@@ -16,8 +16,9 @@
     </MudGrid>
 </MudPaper>
 <MudRTLProvider RightToLeft=false>
-    <MudTable T="CaseReport" Class="m-3" Items="@casesList" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info"
-              MultiSelection="true" @bind-SelectedItems="selectedCases">
+    <MudTable @ref=@_table T="CaseReport" Class="m-3" Items="@casesList" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
+    LoadingProgressColor="Color.Info" MultiSelection="true" @bind-SelectedItems="selectedCases" ServerData="@(new Func<TableState, Task<TableData<CaseReport>>>(GetCases))" 
+                   Striped="true" Elevation="2" RowsPerPage="10">
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh Style="text-align:center">آدرس</MudTh>
@@ -32,5 +33,11 @@
             <MudTd Style="text-align:center" DataLabel="منشاء">@context.SourceTranslate</MudTd>
             <MudTd Style="text-align:center" DataLabel="عنوان">@context.Title</MudTd>
         </RowTemplate>
+        <NoRecordsContent>
+            <MudText>داده ای یافت نشد</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager HideRowsPerPage="true" PageSizeOptions="@_pageSizeOption" RowsPerPageString="تعداد ردیف" />
+        </PagerContent>
     </MudTable>
 </MudRTLProvider>

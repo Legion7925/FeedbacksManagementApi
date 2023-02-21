@@ -63,6 +63,38 @@
         }
       }
     },
+    "/api/Cases/GetCasesCount": {
+      "get": {
+        "tags": [
+          "Cases"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Cases/AddCase": {
       "post": {
         "tags": [
@@ -434,6 +466,26 @@
         "tags": [
           "Feedbacks"
         ],
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -442,7 +494,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
                 }
               },
@@ -450,7 +502,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
                 }
               },
@@ -458,8 +510,40 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Feedbacks/GetFeedbacksCount": {
+      "get": {
+        "tags": [
+          "Feedbacks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
                 }
               }
             }
@@ -485,7 +569,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackReport"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackReport"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackReport"
+                }
+              }
+            }
           }
         }
       }
@@ -521,7 +622,7 @@
         }
       }
     },
-    "/api/Feedbacks/EditFeedback/feedbackId": {
+    "/api/Feedbacks/UpdateFeedback/feedbackId": {
       "put": {
         "tags": [
           "Feedbacks"
@@ -712,7 +813,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
                 }
               },
@@ -720,7 +821,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
                 }
               },
@@ -728,7 +829,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Feedback"
+                    "$ref": "#/components/schemas/FeedbackReport"
                   }
                 }
               }
@@ -1067,8 +1168,7 @@
           },
           "created": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "state": {
             "$ref": "#/components/schemas/FeedbackState"
@@ -1148,9 +1248,142 @@
         },
         "additionalProperties": false
       },
+      "FeedbackReport": {
+        "required": [
+          "description",
+          "fkIdCustomer",
+          "fkIdProduct",
+          "source",
+          "sourceAddress",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "sourceAddress": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "fkIdCustomer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fkIdProduct": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "priorty": {
+            "$ref": "#/components/schemas/Priority"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "referralDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "respondDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "state": {
+            "$ref": "#/components/schemas/FeedbackState"
+          },
+          "respond": {
+            "type": "string",
+            "nullable": true
+          },
+          "similarity": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "serialNumber": {
+            "maxLength": 250,
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            },
+            "nullable": true
+          },
+          "experts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Expert"
+            },
+            "nullable": true
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceTranslate": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "statusTranslate": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "priortyTranslate": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "referralDateFa": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "respondDateFa": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
       "FeedbackReportFilterModel": {
         "type": "object",
         "properties": {
+          "take": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skip": {
+            "type": "integer",
+            "format": "int32"
+          },
           "created": {
             "type": "string",
             "format": "date-time",

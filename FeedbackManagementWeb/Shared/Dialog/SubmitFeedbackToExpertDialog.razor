@@ -1,0 +1,72 @@
+﻿@using FeedbackManagementWeb.Interface;
+@using Infrastructure.Exceptions;
+
+
+<MudRTLProvider RightToLeft="true">
+    <MudDialog>
+
+        <DialogContent>
+            <MudSelect Class="my-3" T="int" @bind-Value="feedbacks.ExpertId" Label="متخصص" >
+                <MudSelectItem Value="7">علیرضا یاری</MudSelectItem>
+                <MudSelectItem Value="8">محمد محمدی</MudSelectItem>
+                <MudSelectItem Value="9">حسین حسینی</MudSelectItem>
+            </MudSelect>
+
+            <MudSelect Class="my-3" T="int" Label="گروه متخصصین" >
+                <MudSelectItem Value="7">گروه یک</MudSelectItem>
+                <MudSelectItem Value="8">گروه دو</MudSelectItem>
+                <MudSelectItem Value="9">گروه سه</MudSelectItem>
+            </MudSelect>
+
+            <MudTextField Class="mt-10" @bind-Value="@feedbacks.Description" Label="توضیحات" Lines=4 Variant="Variant.Outlined"></MudTextField>
+
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color=Color.Error OnClick="Cancel" Class="mt-3">انصراف</MudButton>
+            <MudButton Color="Color.Success" OnClick="SubmitCase" Class="mt-3">ارسال</MudButton>
+        </DialogActions>
+
+    </MudDialog>
+</MudRTLProvider>
+
+@code {
+    [Inject]
+    public IFeedbackService FeedbackService { get; set; } = default!;
+    [Inject]
+    public ISnackbar snackbar { get; set; } = default!;
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = new MudDialogInstance();
+
+    [Parameter]
+    public List<int> FeedbackIds { get; set; } = new();
+
+    private SubmitFeedbacksRequestModel feedbacks = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+    private async Task SubmitCase()
+    {
+        try
+        {
+            feedbacks.FeedbackIds = FeedbackIds;
+            await FeedbackService.SubmitFeedbacksToExpert(feedbacks);
+            MudDialog.Close(DialogResult.Ok(true));
+            snackbar.Add("موارد با موفقیت برای کارشناس ارسال شدند", Severity.Success);
+        }
+        catch (AppException ax)
+        {
+            snackbar.Add(ax.Message, Severity.Warning);
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+}

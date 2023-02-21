@@ -20,11 +20,11 @@ namespace FeedbacksManagementApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Feedback>> GetFeedbacks()
+        public ActionResult<IEnumerable<FeedbackReport>> GetFeedbacks(int take , int skip)
         {
             try
             {
-                return Ok(feedbackRepository.GetFeedbacks());
+                return Ok(feedbackRepository.GetFeedbacks(take,skip));
             }
             catch (AppException ax)
             {
@@ -37,12 +37,29 @@ namespace FeedbacksManagementApi.Controllers
         }
 
         [HttpGet]
-        [Route("feedbackId")]
-        public async Task<IActionResult> GetFeedbackById(int feedbackId)
+        public async Task<ActionResult<int>> GetFeedbacksCount()
         {
             try
             {
-                var feedback = await feedbackRepository.GetFeedbackById(feedbackId);
+                return Ok(await feedbackRepository.GetFeedbacksCount());
+            }
+            catch (AppException ax)
+            {
+                return BadRequest(ax.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("خطا در دریافت تعداد");
+            }
+        }
+
+        [HttpGet]
+        [Route("feedbackId")]
+        public async Task<ActionResult<FeedbackReport>> GetFeedbackById(int feedbackId)
+        {
+            try
+            {
+                var feedback = await feedbackRepository.GetOneFeedback(feedbackId);
 
                 if (feedback == null)
                     return NoContent();
@@ -55,7 +72,7 @@ namespace FeedbacksManagementApi.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("خطا در دریافت موارد");
+                return BadRequest("خطا در دریافت فیدبک");
             }
         }
 
@@ -79,7 +96,7 @@ namespace FeedbacksManagementApi.Controllers
 
         [HttpPut]
         [Route("feedbackId")]
-        public async Task<IActionResult> EditFeedback([FromBody] FeedbackBase feedbackBase, int feedbackId)
+        public async Task<IActionResult> UpdateFeedback([FromBody] FeedbackBase feedbackBase, int feedbackId)
         {
             try
             {
@@ -151,7 +168,7 @@ namespace FeedbacksManagementApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<Feedback>> GetFeedbackReports([FromBody]FeedbackReportFilterModel filterModel)
+        public ActionResult<IEnumerable<FeedbackReport>> GetFeedbackReports([FromBody]FeedbackReportFilterModel filterModel)
         {
             try
             {

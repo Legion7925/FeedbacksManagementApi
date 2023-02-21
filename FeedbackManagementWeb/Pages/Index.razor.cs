@@ -21,38 +21,33 @@ namespace FeedbackManagementWeb.Pages
 
         private IEnumerable<CaseReport> casesList = new List<CaseReport>();
 
-        private bool _loading;
+        private bool _loading = false;
 
         private HashSet<CaseReport> selectedCases = new();
 
-        protected override async Task OnInitializedAsync()
-        {
-            await GetCases();
-        }
+        private readonly int[] _pageSizeOption = { 10, 20, 30 };
+        private MudTable<CaseReport>? _table= new();
 
-        public async Task GetCases()
+        public async Task<TableData<CaseReport>> GetCases(TableState state)
         {
+
             try
             {
-                casesList = await CaseService.GetCases(int.MaxValue, 0);
-                _loading = false;
-                StateHasChanged();
+                var totalItems = await CaseService.GetCasesCount();
+                if (totalItems == 0)
+                {
+                    //if we don't fill the total items and the items we will get a null refrence exception
+                    return new TableData<CaseReport>() { TotalItems = 0, Items = new List<CaseReport>() };
+                }
+                casesList = await CaseService.GetCases(state.PageSize, state.Page * state.PageSize);
+
+                return new TableData<CaseReport>() { TotalItems = totalItems, Items = casesList };
             }
             catch (Exception ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
-                _loading = false;
+                return new TableData<CaseReport>() { TotalItems = 0, Items = new List<CaseReport>() };
             }
-        }
-
-        public void CaseCheckChanged(ChangeEventArgs e)
-        {
-            //var value = (bool?)e.Value ?? false;
-            //if (value)
-            //{
-            //    selectedCases.Add()
-            //}
-
         }
 
         public async Task DeleteSelectedCases()
@@ -68,13 +63,16 @@ namespace FeedbackManagementWeb.Pages
                 DialogOptions options = new DialogOptions() { CloseOnEscapeKey = true };
                 DialogParameters parmeters = new DialogParameters();
                 parmeters.Add("ContentText", $"آیا از حذف موارد انتخابی اطمینان دارید ");
-                var dialodDelete = DialogService.Show<DeleteDialog>("", parmeters, options);
+                parmeters.Add("ButtonText", "حذف");
+                parmeters.Add("Color", Color.Error);
+                var dialodDelete = DialogService.Show<MessageDialog>("", parmeters, options);
                 var result = await dialodDelete.Result;
                 if (!result.Canceled)
                 {
                     await CaseService.DeleteCases(caseIds);
                     Snackbar.Add("مورد با موفقیت حذف شد", Severity.Success);
-                    await GetCases();
+                    await _table!.ReloadServerData();
+                    StateHasChanged();
                 }
             }
             catch (AppException ax)
@@ -102,7 +100,8 @@ namespace FeedbackManagementWeb.Pages
                     await CaseService.SubmitCaseForAnswer(id);
                 }
                 Snackbar.Add("موارد انتخابی با موفقیت برای پاسخ دهی ارسال شدند", Severity.Success);
-                await GetCases();
+                await _table!.ReloadServerData();
+                StateHasChanged();
             }
             catch (AppException ax)
             {
@@ -120,7 +119,10 @@ namespace FeedbackManagementWeb.Pages
             var addDialog = DialogService.Show<AddCaseDialog>("افزودن کاربر", options);
             var result = await addDialog.Result;
             if (result.Canceled is not true)
-                await GetCases();
+            {
+                await _table!.ReloadServerData();
+                StateHasChanged();
+            }
         }
 
         public void ShowCaseDetails(CaseReport @case)
