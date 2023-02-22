@@ -16,6 +16,7 @@ namespace Domain.Interfaces
         Task DeleteFeedbacks(int[] feedbackIds);
         Task<Feedback?> GetFeedbackById(int feedbackId);
         IEnumerable<FeedbackReport> GetFeedbackReport(FeedbackReportFilterModel filterModel);
+        Task<int> GetFeedbackReportCount(FeedbackReportFilterModel filterModel);
         IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip, FeedbackState state);
         Task SubmitFeedbacksToExpert(SubmitFeedbacksRequestModel submitModel);
         Task UpdateFeedback(FeedbackBase feedbackBase, int feedbackId);

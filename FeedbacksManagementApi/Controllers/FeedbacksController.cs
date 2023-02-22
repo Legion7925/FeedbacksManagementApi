@@ -203,5 +203,22 @@ namespace FeedbacksManagementApi.Controllers
                 return BadRequest("خطا در دریافت گزارش");
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> GetFeedbackReportCount([FromBody] FeedbackReportFilterModel filterModel)
+        {
+            try
+            {
+                return Ok(await feedbackRepository.GetFeedbackReportCount(filterModel));
+            }
+            catch (AppException ax)
+            {
+                return BadRequest(ax.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("خطا در دریافت تعداد");
+            }
+        }
     }
 }

@@ -25,31 +25,31 @@ public class FeedbackRepository : IFeedbackRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="AppException"></exception>
-    public IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip , FeedbackState state)
+    public IEnumerable<FeedbackReport> GetFeedbacks(int take, int skip, FeedbackState state)
     {
-        return context.Feedbacks.AsNoTracking().Where(i=>i.State == state)
+        return context.Feedbacks.AsNoTracking().Where(i => i.State == state)
             .Skip(skip).Take(take).Include(c => c.Customer).Include(c => c.Product)
-                .Select(c => new FeedbackReport
-                {
-                    CustomerName = c.Customer!.NameAndFamily,
-                    Description = c.Description,
-                    FkIdCustomer = c.FkIdCustomer,
-                    Id = c.Id,
-                    ProductName = c.Product!.Name,
-                    Resources = c.Resources,
-                    Source = c.Source,
-                    SourceAddress = c.SourceAddress,
-                    Title = c.Title,
-                    FkIdProduct = c.FkIdProduct,
-                    RespondDate = c.RespondDate,
-                    Created = c.Created,
-                    Priorty = c.Priorty,
-                    Respond = c.Respond,
-                    ReferralDate = c.ReferralDate,
-                    Similarity = c.Similarity,
-                    SerialNumber = c.SerialNumber ,
-                    State = c.State,
-                });
+            .Select(c => new FeedbackReport
+            {
+                CustomerName = c.Customer!.NameAndFamily,
+                Description = c.Description,
+                FkIdCustomer = c.FkIdCustomer,
+                Id = c.Id,
+                ProductName = c.Product!.Name,
+                Resources = c.Resources,
+                Source = c.Source,
+                SourceAddress = c.SourceAddress,
+                Title = c.Title,
+                FkIdProduct = c.FkIdProduct,
+                RespondDate = c.RespondDate,
+                Created = c.Created,
+                Priorty = c.Priorty,
+                Respond = c.Respond,
+                ReferralDate = c.ReferralDate,
+                Similarity = c.Similarity,
+                SerialNumber = c.SerialNumber,
+                State = c.State,
+            });
 
     }
     /// <summary>
@@ -208,8 +208,8 @@ public class FeedbackRepository : IFeedbackRepository
         if (filterModel.ProductId is not 0) feedbacks = feedbacks.Where(i => i.FkIdProduct == filterModel.ProductId);
         if (filterModel.CustomerId is not 0) feedbacks = feedbacks.Where(i => i.FkIdCustomer == filterModel.CustomerId);
         //if (filterModel.ExpertId is not 0) feedbacks = feedbacks.Include(e => e.Experts).Where(i => );
-        if (filterModel.Tags is not null && filterModel.Tags.Count is not 0)
-            feedbacks = feedbacks.Where(i => i.Tags == filterModel.Tags);
+        //if (filterModel.Tags is not null && filterModel.Tags.Count is not 0)
+        //    feedbacks = feedbacks.Where(i => i.Tags == filterModel.Tags);
         if (filterModel.Source is not null) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
         if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created == filterModel.Created);
         if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate == filterModel.ReferralDate);
@@ -222,25 +222,37 @@ public class FeedbackRepository : IFeedbackRepository
         if (!string.IsNullOrEmpty(filterModel.SerialNumber)) feedbacks = feedbacks.Where(i => i.SerialNumber == filterModel.SerialNumber);
         return feedbacks.Skip(filterModel.Skip).Take(filterModel.Take).Select(c => new FeedbackReport
         {
-            CustomerName = c.Customer!.NameAndFamily,
-            Description = c.Description,
-            FkIdCustomer = c.FkIdCustomer,
             Id = c.Id,
-            ProductName = c.Product!.Name,
-            Resources = c.Resources,
             Source = c.Source,
             SourceAddress = c.SourceAddress,
             Title = c.Title,
-            FkIdProduct = c.FkIdProduct,
-            RespondDate = c.RespondDate,
-            Created = c.Created,
-            Priorty = c.Priorty,
-            Respond = c.Respond,
-            ReferralDate = c.ReferralDate,
-            Similarity = c.Similarity,
             SerialNumber = c.SerialNumber,
-            State = c.State,
         });
+    }
+    /// <summary>
+    /// تعداد گزارش
+    /// </summary>
+    /// <param name="filterModel"></param>
+    /// <returns></returns>
+    public async Task<int> GetFeedbackReportCount(FeedbackReportFilterModel filterModel)
+    {
+        var feedbacks = context.Feedbacks.AsNoTracking();
+        if (filterModel.ProductId is not 0) feedbacks = feedbacks.Where(i => i.FkIdProduct == filterModel.ProductId);
+        if (filterModel.CustomerId is not 0) feedbacks = feedbacks.Where(i => i.FkIdCustomer == filterModel.CustomerId);
+        //if (filterModel.ExpertId is not 0) feedbacks = feedbacks.Include(e => e.Experts).Where(i => );
+        //if (filterModel.Tags is not null && filterModel.Tags.Count is not 0)
+        //    feedbacks = feedbacks.Where(i => i.Tags == filterModel.Tags);
+        if (filterModel.Source is not null) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
+        if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created == filterModel.Created);
+        if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate == filterModel.ReferralDate);
+        if (filterModel.RespondDate is not null) feedbacks = feedbacks.Where(i => i.RespondDate == filterModel.RespondDate);
+        if (filterModel.Priorty is not null) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
+        if (filterModel.State is not null) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
+        if (!string.IsNullOrEmpty(filterModel.Description)) feedbacks = feedbacks.Where(i => i.Description == filterModel.Description);
+        if (!string.IsNullOrEmpty(filterModel.Respond)) feedbacks = feedbacks.Where(i => i.Respond == filterModel.Respond);
+        if (!string.IsNullOrEmpty(filterModel.Title)) feedbacks = feedbacks.Where(i => i.Title == filterModel.Title);
+        if (!string.IsNullOrEmpty(filterModel.SerialNumber)) feedbacks = feedbacks.Where(i => i.SerialNumber == filterModel.SerialNumber);
+        return await feedbacks.CountAsync();
     }
     /// <summary>
     /// اعتبارسنجی وجود آیدی مشتری و محصول

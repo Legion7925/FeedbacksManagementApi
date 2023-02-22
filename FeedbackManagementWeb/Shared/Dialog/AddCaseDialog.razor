@@ -36,7 +36,7 @@
         {
             caseBase.FkIdProduct = 1;
             caseBase.FkIdCustomer = 1;
-            caseBase.Source = Source._2;
+            caseBase.Source = Source.Site;
             caseBase.SourceAddress = "ثبت شده توسط ادمین";
             await CaseService.AddCase(caseBase);
             MudDialog.Close(DialogResult.Ok(true));

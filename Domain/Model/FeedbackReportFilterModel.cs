@@ -35,7 +35,7 @@ namespace FeedbacksManagementApi.Model
 
         public Priority? Priorty { get; set; }
 
-        public ICollection<Tag>? Tags { get; set; }
+        //public ICollection<Tag>? Tags { get; set; }
 
     }
 }

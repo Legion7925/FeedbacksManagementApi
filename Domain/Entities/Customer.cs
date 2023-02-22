@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities
 {
     public class Customer
     {
@@ -10,6 +12,7 @@
 
         public string? Phone { get; set; }
 
+        [JsonIgnore]
         public ICollection<Feedback>? Feedbacks { get; set; }
     }
 }

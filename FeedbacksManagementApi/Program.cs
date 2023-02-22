@@ -10,6 +10,9 @@ builder.Services.AddDbContext<FeedbacksDbContext>(options => options.UseSqlServe
 builder.Services.AddScoped<ICasesRepository, CasesRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IExpertRepository, ExpertRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 //migrate database if it doesn't exist
 builder.Services.AddAutoMapper(typeof(Program));
 
