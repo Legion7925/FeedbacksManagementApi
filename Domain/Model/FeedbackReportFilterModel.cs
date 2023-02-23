@@ -25,7 +25,7 @@ namespace FeedbacksManagementApi.Model
 
         public int ExpertId { get; set; }
 
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
         public string? Respond { get; set; }
 

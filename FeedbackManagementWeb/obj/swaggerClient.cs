@@ -2440,17 +2440,73 @@ namespace FeedbackManagementWeb
         public string Respond { get; set; }
     
         [Newtonsoft.Json.JsonProperty("source", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Source? Source { get; set; }
+        public Source Source { get; set; }
     
         [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FeedbackState? State { get; set; }
+        public FeedbackState State { get; set; }
     
         [Newtonsoft.Json.JsonProperty("priorty", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Priority? Priorty { get; set; }
+        public Priority Priorty { get; set; }
     
     
     }
-        
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
+    public enum FeedbackState
+    {
+        All = 0,
+        /// <summary>
+        /// آماده ارسال
+        /// </summary>
+        ReadyToSend = 1,
+        /// <summary>
+        /// ارسال شده به متخصص
+        /// </summary>
+        SentToExpert = 2,
+        /// <summary>
+        /// حذف شده
+        /// </summary>
+        Deleted = 3,
+        /// <summary>
+        /// بایگانی شده
+        /// </summary>
+        Archived = 4,
+        /// <summary>
+        /// پاسخ داده شده
+        /// </summary>
+        Answered = 5,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
+    public enum Gender
+    {
+        All = 1,
+        Unknown = 2,
+        Male = 3,
+        Female = 4,
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
+    public enum Priority
+    {
+        All = 0,
+        Low = 1,
+        Medium = 2,
+        High = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
+    public enum Source
+    {
+        All = 0,
+        Email = 1,
+        SMS = 2,
+        Site = 3,
+        MobileApp = 4,
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class Product 
     {
@@ -2466,60 +2522,8 @@ namespace FeedbackManagementWeb
     
     
     }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum FeedbackState
-    {
-        /// <summary>
-        /// آماده ارسال
-        /// </summary>
-        ReadyToSend = 0,
-        /// <summary>
-        /// ارسال شده به متخصص
-        /// </summary>
-        SentToExpert = 1,
-        /// <summary>
-        /// حذف شده
-        /// </summary>
-        Deleted = 2,
-        /// <summary>
-        /// بایگانی شده
-        /// </summary>
-        Archived = 3,
-        /// <summary>
-        /// پاسخ داده شده
-        /// </summary>
-        Answered = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum Gender
-    {
-        Unknown = 0,
-        Male = 1,
-        Female = 2,
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum Priority
-    {
-        Low = 0,
-        Medium = 1,
-        High = 2,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum Source
-    {
-        Email = 0,
-        SMS = 1,
-        Site = 2,
-        MobileApp = 3,
-
-    }
-
+   
+    
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class Specialty 
     {

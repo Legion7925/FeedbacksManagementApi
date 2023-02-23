@@ -2,24 +2,25 @@
 
 public enum FeedbackState : byte
 {
+    All = 0,
     /// <summary>
     /// آماده ارسال
     /// </summary>
-    ReadyToSend = 0,
+    ReadyToSend = 1,
     /// <summary>
     /// ارسال شده به متخصص
     /// </summary>
-    SentToExpert = 1,
+    SentToExpert = 2,
     /// <summary>
     /// حذف شده
     /// </summary>
-    Deleted = 2,
+    Deleted = 3,
     /// <summary>
     /// بایگانی شده
     /// </summary>
-    Archived = 3,
+    Archived = 4,
     /// <summary>
     /// پاسخ داده شده
     /// </summary>
-    Answered = 3,
+    Answered = 5,
 }

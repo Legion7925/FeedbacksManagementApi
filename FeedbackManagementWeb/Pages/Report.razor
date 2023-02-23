@@ -9,31 +9,38 @@
                 <MudTextField Class="mt-3" T="string" @bind-Value="filter.Title" Label="عنوان"></MudTextField>
                 <MudTextField Class="mt-3" T="string" Label="تگ های موضوعی"></MudTextField>
                 <MudAutocomplete T="string" Class="mt-3" Label="محصول" CoerceText="false"
-                                 ResetValueOnEmptyText="true" />
+                                 ResetValueOnEmptyText="true" SearchFunc="SearchProductName" />
                 <MudAutocomplete T="string" Class="mt-3" Label="مشتری" CoerceText="false"
-                                 ResetValueOnEmptyText="true" />
+                                 ResetValueOnEmptyText="true" SearchFunc="SearchCustomerName" @bind-Value="customerNameFilter"/>
             </div>
         </MudItem>
         <MudItem xs=2 sm=2 Class="m-3">
             <div class="row">
-                <MudSelect T="Source"  Label="منبع">
+
+                <MudSelect Label="منبع" @bind-Value="filter.Source">
+                    <MudSelectItem Value="Source.All">همه</MudSelectItem>
                     <MudSelectItem Value="Source.Email">ایمیل</MudSelectItem>
                     <MudSelectItem Value="Source.SMS">ایمیل</MudSelectItem>
                     <MudSelectItem Value="Source.MobileApp">نرم افزار موبایل</MudSelectItem>
                     <MudSelectItem Value="Source.Site">وب سایت</MudSelectItem>
                 </MudSelect>
-                <MudSelect T="FeedbackState"  Label="منبع">
+
+                <MudSelect Label="وضعیت" @bind-Value="filter.State">
+                    <MudSelectItem Value="FeedbackState.All">همه</MudSelectItem>
                     <MudSelectItem Value="FeedbackState.ReadyToSend">آماده ارسال</MudSelectItem>
                     <MudSelectItem Value="FeedbackState.SentToExpert">ارسال شده به متخصص</MudSelectItem>
                     <MudSelectItem Value="FeedbackState.Answered">پاسخ داده شده</MudSelectItem>
                     <MudSelectItem Value="FeedbackState.Archived">بایگانی شده</MudSelectItem>
                     <MudSelectItem Value="FeedbackState.Deleted">حذف شده</MudSelectItem>
                 </MudSelect>
-                <MudSelect T="Priority" Label="منبع">
+
+                <MudSelect Label="اولویت" @bind-Value="filter.Priorty">
+                    <MudSelectItem Value="Priority.All">همه</MudSelectItem>
                     <MudSelectItem Value="Priority.Medium">معمولی</MudSelectItem>
                     <MudSelectItem Value="Priority.High">بالا</MudSelectItem>
                     <MudSelectItem Value="Priority.Low">پایین</MudSelectItem>
                 </MudSelect>
+
                 <MudAutocomplete T="string" Class="mt-3" Label="ایجاد توسط" CoerceText="false"
                                  ResetValueOnEmptyText="true" />
                 <MudAutocomplete T="string" Class="mt-3" Label="ارجاع به نخبه" CoerceText="false"
@@ -92,7 +99,7 @@
             <MudText>داده ای یافت نشد</MudText>
         </NoRecordsContent>
         <PagerContent>
-            <MudTablePager HideRowsPerPage="true" PageSizeOptions="@_pageSizeOption" RowsPerPageString="تعداد ردیف" />
+            <MudTablePager HideRowsPerPage="true" HidePageNumber="true" PageSizeOptions="@_pageSizeOption" RowsPerPageString="تعداد ردیف" />
         </PagerContent>
     </MudTable>
 </MudRTLProvider>

@@ -210,12 +210,12 @@ public class FeedbackRepository : IFeedbackRepository
         //if (filterModel.ExpertId is not 0) feedbacks = feedbacks.Include(e => e.Experts).Where(i => );
         //if (filterModel.Tags is not null && filterModel.Tags.Count is not 0)
         //    feedbacks = feedbacks.Where(i => i.Tags == filterModel.Tags);
-        if (filterModel.Source is not null) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
+        if (filterModel.Source is not Source.All) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
         if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created == filterModel.Created);
         if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate == filterModel.ReferralDate);
         if (filterModel.RespondDate is not null) feedbacks = feedbacks.Where(i => i.RespondDate == filterModel.RespondDate);
-        if (filterModel.Priorty is not null) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
-        if (filterModel.State is not null) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
+        if (filterModel.Priorty is not Priority.All) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
+        if (filterModel.State is not FeedbackState.All) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
         if (!string.IsNullOrEmpty(filterModel.Description)) feedbacks = feedbacks.Where(i => i.Description == filterModel.Description);
         if (!string.IsNullOrEmpty(filterModel.Respond)) feedbacks = feedbacks.Where(i => i.Respond == filterModel.Respond);
         if (!string.IsNullOrEmpty(filterModel.Title)) feedbacks = feedbacks.Where(i => i.Title == filterModel.Title);
@@ -242,12 +242,12 @@ public class FeedbackRepository : IFeedbackRepository
         //if (filterModel.ExpertId is not 0) feedbacks = feedbacks.Include(e => e.Experts).Where(i => );
         //if (filterModel.Tags is not null && filterModel.Tags.Count is not 0)
         //    feedbacks = feedbacks.Where(i => i.Tags == filterModel.Tags);
-        if (filterModel.Source is not null) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
-        if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created == filterModel.Created);
-        if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate == filterModel.ReferralDate);
-        if (filterModel.RespondDate is not null) feedbacks = feedbacks.Where(i => i.RespondDate == filterModel.RespondDate);
-        if (filterModel.Priorty is not null) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
-        if (filterModel.State is not null) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
+        if (filterModel.Source != Source.All) feedbacks = feedbacks.Where(i => i.Source == filterModel.Source);
+        if (filterModel.Created is not null) feedbacks = feedbacks.Where(i => i.Created.Date == filterModel.Created.Value.Date);
+        if (filterModel.ReferralDate is not null) feedbacks = feedbacks.Where(i => i.ReferralDate.Date == filterModel.ReferralDate.Value.Date);
+        if (filterModel.RespondDate is not null) feedbacks = feedbacks.Where(i => i.RespondDate.Date == filterModel.RespondDate.Value.Date);
+        if (filterModel.Priorty != Priority.All) feedbacks = feedbacks.Where(i => i.Priorty == filterModel.Priorty);
+        if (filterModel.State != FeedbackState.All) feedbacks = feedbacks.Where(i => i.State == filterModel.State);
         if (!string.IsNullOrEmpty(filterModel.Description)) feedbacks = feedbacks.Where(i => i.Description == filterModel.Description);
         if (!string.IsNullOrEmpty(filterModel.Respond)) feedbacks = feedbacks.Where(i => i.Respond == filterModel.Respond);
         if (!string.IsNullOrEmpty(filterModel.Title)) feedbacks = feedbacks.Where(i => i.Title == filterModel.Title);

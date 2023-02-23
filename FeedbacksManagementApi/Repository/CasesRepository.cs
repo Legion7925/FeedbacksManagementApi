@@ -140,6 +140,8 @@ namespace FeedbacksManagementApi.Repository
             }
             var feedback = mapper.Map<Feedback>(feedbackCase);
             feedback.State = FeedbackState.ReadyToSend;
+            feedback.Priorty = Priority.Medium;
+            feedback.Source = Source.Site;
             feedback.SerialNumber = $"{DateTime.Now.Ticks}";
             feedback.Created = DateTime.Now;
             await context.Feedbacks.AddAsync(feedback);

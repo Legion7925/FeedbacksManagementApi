@@ -2,8 +2,9 @@
 
 public enum Source : byte
 {
-    Email = 0,
-    SMS = 1,
-    Site = 2,
-    MobileApp= 3,
+    All = 0,
+    Email = 1,
+    SMS = 2,
+    Site = 3,
+    MobileApp= 4,
 }

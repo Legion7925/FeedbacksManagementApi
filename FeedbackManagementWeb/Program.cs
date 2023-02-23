@@ -26,6 +26,7 @@ builder.Services.AddMudServices(config =>
 });
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 AppSettings.ApiBaseUrl = builder.Configuration["ApiUrl"] ?? string.Empty;
 

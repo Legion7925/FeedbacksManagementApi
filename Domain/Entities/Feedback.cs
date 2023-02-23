@@ -58,7 +58,7 @@ namespace Domain.Entities
         /// <summary>
         /// تاریخ ارجاع
         /// </summary>
-        public DateTime? ReferralDate { get; set; } = new DateTime(2000, 01, 01);
+        public DateTime ReferralDate { get; set; } = new DateTime(2000, 01, 01);
         /// <summary>
         /// تاریخ برگشت
         /// </summary>

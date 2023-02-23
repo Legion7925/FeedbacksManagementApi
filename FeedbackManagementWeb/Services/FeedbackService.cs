@@ -23,6 +23,24 @@ namespace FeedbackManagementWeb.Services
                 //todo log error
             }
         }
+        public async Task<int> GetFeedbackCount()
+        {
+            try
+            {
+                using (var http = new HttpClient())
+                {
+
+                    var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
+                    var response = await client.GetFeedbacksCountAsync();
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("خطا در دریافت تعداد");
+                //todo log error
+            }
+        }
 
         public async Task<IEnumerable<FeedbackReport>> GetFeedbackReport(FeedbackReportFilterModel filter)
         {
@@ -43,7 +61,7 @@ namespace FeedbackManagementWeb.Services
             }
         }
 
-        public async Task<int> GetFeedbackCount()
+        public async Task<int> GetFeedbackReportCount(FeedbackReportFilterModel filter)
         {
             try
             {
@@ -51,7 +69,7 @@ namespace FeedbackManagementWeb.Services
                 {
 
                     var client = new swaggerClient(AppSettings.ApiBaseUrl, http);
-                    var response = await client.GetFeedbacksCountAsync();
+                    var response = await client.GetFeedbackReportCountAsync(filter);
                     return response;
                 }
             }

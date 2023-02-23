@@ -29,7 +29,7 @@ namespace FeedbackManagementWeb.Pages
 
         private MudTable<FeedbackReport>? _table = new();
 
-        private FeedbackReportFilterModel filter = new() { Created = null, Source = null, Priorty = null, RespondDate = null, ReferralDate = null };
+        private FeedbackReportFilterModel filter = new();
 
         private bool firstRender = true;
 
@@ -41,18 +41,31 @@ namespace FeedbackManagementWeb.Pages
         IEnumerable<Specialty> specialties= new List<Specialty>();
         IEnumerable<Customer> customers= new List<Customer>();
 
+        private string customerNameFilter = string.Empty;
+        private string productNameFilter = string.Empty;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender is not true)
+                return;
+
+            await GetAppLists();
+        }
+
         public async Task<TableData<FeedbackReport>> GetFeedbackReport(TableState state)
         {
             if (firstRender)
                 return new TableData<FeedbackReport>() { TotalItems = 0, Items = new List<FeedbackReport>() };
             try
             {
-                var totalItems = await FeedbackService.GetFeedbackCount();
+                var totalItems = await FeedbackService.GetFeedbackReportCount(filter);
                 if (totalItems == 0)
                 {
                     //if we don't fill the total items and the items we will get a null refrence exception
+                    Snackbar.Add("داده ای برای نمایش یافت نشد", Severity.Info);
                     return new TableData<FeedbackReport>() { TotalItems = 0, Items = new List<FeedbackReport>() };
                 }
+
                 filter.Skip = state.Page * state.PageSize;
                 filter.Take = state.PageSize;
                 filter.Created = Created;
@@ -70,6 +83,8 @@ namespace FeedbackManagementWeb.Pages
 
         private async Task GetReport()
         {
+            filter.CustomerId = customers.FirstOrDefault(i => i.NameAndFamily == customerNameFilter)?.Id ?? 0;
+            filter.ProductId = products.FirstOrDefault(i => i.Name == productNameFilter)?.Id ?? 0;
             firstRender = false;
             await _table!.ReloadServerData();
         }
@@ -86,6 +101,32 @@ namespace FeedbackManagementWeb.Pages
             {
                 Snackbar.Add(ex.Message, Severity.Error);
             }
+        }
+
+        private async Task<IEnumerable<string>> SearchCustomerName(string value)
+        {
+            await Task.Delay(5);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return customers.Select(i => i.NameAndFamily);
+            }
+
+            return customers.Where(i => i.NameAndFamily
+            .Contains(value, StringComparison.OrdinalIgnoreCase)).Select(u => u.NameAndFamily);
+        }  
+
+        private async Task<IEnumerable<string>> SearchProductName(string value)
+        {
+            await Task.Delay(5);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return products.Select(i => i.Name);
+            }
+
+            return products.Where(i => i.Name
+            .Contains(value, StringComparison.OrdinalIgnoreCase)).Select(u => u.Name);
         }
     }
 }
